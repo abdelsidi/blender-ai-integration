@@ -216,20 +216,27 @@ class ImageToSceneCore:
         return obj
     
     def create_displacement_plane(self, analysis, image_path, strength=2.0):
-        """Create plane with displacement based on depth map - FIXED direction"""
+        """Create plane with displacement based on depth map - FIXED UV and direction"""
         # Create high-res plane at origin
         bpy.ops.mesh.primitive_plane_add(size=10, location=(0, 0, 0))
         plane = bpy.context.active_object
         plane.name = "AI_Depth_Scene"
         
-        # Subdivide for detail
+        # Enter edit mode for UV and subdivision
+        bpy.context.view_layer.objects.active = plane
         bpy.ops.object.mode_set(mode='EDIT')
-        bpy.ops.mesh.subdivide(number_cuts=50)
-        bpy.ops.object.mode_set(mode='OBJECT')
         
-        # Ensure UV map exists and covers full image
-        if not plane.data.uv_layers:
-            plane.data.uv_layers.new()
+        # Select all
+        bpy.ops.mesh.select_all(action='SELECT')
+        
+        # Create UV map that covers full image (Project from View)
+        bpy.ops.uv.smart_project(angle_limit=66.0, island_margin=0.0, area_weight=1.0)
+        
+        # Subdivide for detail
+        bpy.ops.mesh.subdivide(number_cuts=50, smoothness=0)
+        
+        # Exit edit mode
+        bpy.ops.object.mode_set(mode='OBJECT')
         
         # Add Subdivision Surface for smoothness
         subsurf = plane.modifiers.new(name="Subsurf", type='SUBSURF')
@@ -237,8 +244,7 @@ class ImageToSceneCore:
         subsurf.render_levels = 3
         subsurf.subdivision_type = 'SIMPLE'
         
-        # Apply subdivision first
-        bpy.context.view_layer.objects.active = plane
+        # Apply subdivision
         bpy.ops.object.modifier_apply(modifier="Subsurf")
         
         # Add displacement modifier
@@ -259,6 +265,7 @@ class ImageToSceneCore:
         # Configure displacement
         disp.texture = tex
         disp.texture_coords = 'UV'
+        disp.uv_layer = "UVMap"
         disp.direction = 'Z'  # Displace along Z (up/down)
         disp.strength = abs(strength)  # Positive = UP
         disp.mid_level = 0.0  # Black = 0 displacement
