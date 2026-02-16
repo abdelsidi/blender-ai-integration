@@ -52,7 +52,15 @@ class AIImageToScenePanel(Panel):
         row.prop(scene, "image_scene_depth_quality", text="Quality")
         
         row = box.row()
-        row.prop(scene, "image_scene_depth_strength", text="Depth Strength")
+        row.prop(scene, "image_scene_depth_strength", text="Height Amount")
+        
+        # Show direction hint
+        if scene.image_scene_depth_strength < 0:
+            row = box.row()
+            row.label(text="⚠️ Negative = Downward", icon='ERROR')
+        else:
+            row = box.row()
+            row.label(text="✓ Positive = Upward", icon='CHECKMARK')
         
         row = box.row()
         row.scale_y = 1.2
@@ -240,10 +248,11 @@ def register():
     )
     
     bpy.types.Scene.image_scene_depth_strength = FloatProperty(
-        name="Depth Strength",
-        default=1.0,
-        min=0.1,
-        max=3.0
+        name="Height Amount",
+        description="How much the mesh rises up (positive) or down (negative)",
+        default=2.0,
+        min=-5.0,
+        max=5.0
     )
     
     bpy.types.Scene.image_scene_depth_status = StringProperty(

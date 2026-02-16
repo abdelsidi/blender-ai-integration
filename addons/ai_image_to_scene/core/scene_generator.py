@@ -72,22 +72,25 @@ class ImageToSceneCore:
         return objects
     
     def generate_depth_map(self, img):
-        """Generate depth map from image"""
+        """Generate depth map from image - FIXED: proper depth direction"""
         # Convert to grayscale
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         
-        # Use gradient-based depth estimation
+        # Method 1: Use image brightness as depth (brighter = higher/closer)
+        # This works better for landscapes and most photos
+        depth = cv2.normalize(gray.astype(np.float32), None, 0, 255, cv2.NORM_MINMAX).astype(np.uint8)
+        
+        # Method 2: Use gradient for detail (optional enhancement)
         sobelx = cv2.Sobel(gray, cv2.CV_64F, 1, 0, ksize=3)
         sobely = cv2.Sobel(gray, cv2.CV_64F, 0, 1, ksize=3)
-        
-        # Gradient magnitude
         gradient = np.sqrt(sobelx**2 + sobely**2)
+        gradient = cv2.normalize(gradient, None, 0, 100, cv2.NORM_MINMAX).astype(np.uint8)
         
-        # Invert and normalize (closer objects = brighter)
-        depth = 255 - cv2.normalize(gradient, None, 0, 255, cv2.NORM_MINMAX).astype(np.uint8)
+        # Combine: Base brightness + edge detail
+        depth = cv2.addWeighted(depth, 0.7, gradient, 0.3, 0)
         
-        # Apply blur for smoothness
-        depth = cv2.GaussianBlur(depth, (15, 15), 0)
+        # Apply blur for smoothness but keep more detail
+        depth = cv2.GaussianBlur(depth, (7, 7), 0)
         
         return depth
     
@@ -140,8 +143,9 @@ class ImageToSceneCore:
             if obj:
                 scene_objects.append(obj)
         
-        # 3. Create depth-based displacement plane
-        displacement_plane = self.create_displacement_plane(analysis, image_path)
+        # 3. Create depth-based displacement plane with configurable strength
+        displacement_strength = 2.0  # Default upward displacement
+        displacement_plane = self.create_displacement_plane(analysis, image_path, displacement_strength)
         scene_objects.append(displacement_plane)
         
         # 4. Setup lighting based on analysis
@@ -211,17 +215,31 @@ class ImageToSceneCore:
         
         return obj
     
-    def create_displacement_plane(self, analysis, image_path):
-        """Create plane with displacement based on depth map"""
-        # Create high-res plane
-        bpy.ops.mesh.primitive_plane_add(size=10, location=(0, 0, 0.5))
+    def create_displacement_plane(self, analysis, image_path, strength=2.0):
+        """Create plane with displacement based on depth map - FIXED direction"""
+        # Create high-res plane at origin
+        bpy.ops.mesh.primitive_plane_add(size=10, location=(0, 0, 0))
         plane = bpy.context.active_object
         plane.name = "AI_Depth_Scene"
         
-        # Subdivide
+        # Subdivide for detail
         bpy.ops.object.mode_set(mode='EDIT')
         bpy.ops.mesh.subdivide(number_cuts=50)
         bpy.ops.object.mode_set(mode='OBJECT')
+        
+        # Ensure UV map exists and covers full image
+        if not plane.data.uv_layers:
+            plane.data.uv_layers.new()
+        
+        # Add Subdivision Surface for smoothness
+        subsurf = plane.modifiers.new(name="Subsurf", type='SUBSURF')
+        subsurf.levels = 2
+        subsurf.render_levels = 3
+        subsurf.subdivision_type = 'SIMPLE'
+        
+        # Apply subdivision first
+        bpy.context.view_layer.objects.active = plane
+        bpy.ops.object.modifier_apply(modifier="Subsurf")
         
         # Add displacement modifier
         disp = plane.modifiers.new(name="Displacement", type='DISPLACE')
@@ -229,7 +247,7 @@ class ImageToSceneCore:
         # Create texture from depth map
         depth_map = analysis['depth_map']
         
-        # Save depth map temporarily
+        # Save depth map temporarily with proper format
         temp_path = os.path.join(bpy.app.tempdir, "depth_map.png")
         cv2.imwrite(temp_path, depth_map)
         
@@ -238,12 +256,19 @@ class ImageToSceneCore:
         img = bpy.data.images.load(temp_path)
         tex.image = img
         
+        # Configure displacement
         disp.texture = tex
-        disp.strength = 2.0
+        disp.texture_coords = 'UV'
+        disp.direction = 'Z'  # Displace along Z (up/down)
+        disp.strength = abs(strength)  # Positive = UP
+        disp.mid_level = 0.0  # Black = 0 displacement
         
         # Add material with original image
         mat = self.create_scene_material(image_path)
         plane.data.materials.append(mat)
+        
+        # Apply displacement
+        bpy.ops.object.modifier_apply(modifier="Displacement")
         
         return plane
     
