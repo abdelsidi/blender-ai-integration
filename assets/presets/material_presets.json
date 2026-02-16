@@ -1,0 +1,22 @@
+{
+  "material_presets": {
+    "metal": {
+      "prompt": "metal surface",
+      "style": "realistic",
+      "roughness": 0.3,
+      "metallic": 1.0
+    },
+    "wood": {
+      "prompt": "wooden oak texture",
+      "style": "realistic",
+      "roughness": 0.7,
+      "metallic": 0.0
+    },
+    "fabric": {
+      "prompt": "fabric cloth texture",
+      "style": "realistic",
+      "roughness": 0.9,
+      "metallic": 0.0
+    }
+  }
+}

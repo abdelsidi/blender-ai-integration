@@ -4,17 +4,22 @@ bl_info = {
     "version": (1, 0, 0),
     "blender": (3, 0, 0),
     "location": "View3D > Sidebar > AI Tools > Auto Rigging",
-    "description": "Automatic rigging using AI",
+    "description": "Automatic character rigging using AI",
     "category": "AI",
+    "doc_url": "https://github.com/abdelsidi/blender-ai-integration/blob/main/docs/ADDON_INSTALLATION.md",
+    "tracker_url": "https://github.com/abdelsidi/blender-ai-integration/issues",
 }
 
 import bpy
+from . import ui, utils
 
 def register():
-    pass
+    ui.register()
+    utils.register()
 
 def unregister():
-    pass
+    ui.unregister()
+    utils.unregister()
 
 if __name__ == "__main__":
     register()

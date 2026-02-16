@@ -1,0 +1,22 @@
+{
+  "lighting_presets": {
+    "studio": {
+      "style": "balanced",
+      "main_light_energy": 1.0,
+      "fill_light_energy": 0.5,
+      "rim_light_energy": 0.3
+    },
+    "dramatic": {
+      "style": "dramatic",
+      "main_light_energy": 1.5,
+      "fill_light_energy": 0.2,
+      "rim_light_energy": 0.5
+    },
+    "soft": {
+      "style": "bright",
+      "main_light_energy": 0.8,
+      "fill_light_energy": 0.6,
+      "rim_light_energy": 0.2
+    }
+  }
+}

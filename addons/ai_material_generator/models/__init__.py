@@ -1,5 +1,10 @@
+from . import stable_diffusion
+from . import dalle
+
 def register():
-    pass
+    stable_diffusion.register()
+    dalle.register()
 
 def unregister():
-    pass
+    dalle.unregister()
+    stable_diffusion.unregister()
