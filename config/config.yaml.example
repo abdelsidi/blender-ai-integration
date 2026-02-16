@@ -1,0 +1,58 @@
+# Blender AI Integration Configuration
+# انسخ هذا الملف إلى config/config.yaml وعدل القيم
+
+# إعدادات عامة
+project:
+  name: "Blender AI Integration"
+  version: "1.0.0"
+  debug: false
+
+# إعدادات خدمات AI
+ai_services:
+  # OpenAI / DALL-E
+  openai:
+    api_key: ""  # أضف مفتاح API هنا
+    model: "dall-e-3"
+    timeout: 60
+    
+  # Stability AI / Stable Diffusion
+  stability:
+    api_key: ""  # أضف مفتاح API هنا
+    engine: "stable-diffusion-xl-1024-v1-0"
+    timeout: 120
+    
+  # Midjourney (عبر Replicate)
+  midjourney:
+    api_key: ""  # أضف مفتاح API هنا
+    model: "tstramer/midjourney-diffusion"
+    timeout: 300
+
+# إعدادات المسار
+paths:
+  output_dir: "./outputs"
+  temp_dir: "./temp"
+  models_dir: "./ai_models"
+  cache_dir: "./.cache"
+
+# إعدادات الإضافات
+addons:
+  ai_material_generator:
+    enabled: true
+    default_model: "stable_diffusion"
+    cache_enabled: true
+    
+  ai_lighting:
+    enabled: true
+    auto_apply: false
+    
+  auto_rigging_ai:
+    enabled: false  # قيد التطوير
+    
+  ai_animation:
+    enabled: false  # قيد التطوير
+
+# إعدادات الواجهة
+ui:
+  language: "ar"  # ar, en
+  theme: "default"
+  show_tips: true
