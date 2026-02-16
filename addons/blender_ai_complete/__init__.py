@@ -21,15 +21,15 @@ from bpy.props import StringProperty, EnumProperty, IntProperty, BoolProperty, F
 class AIMaterialGeneratorSettings(PropertyGroup):
     prompt: StringProperty(name="Prompt", default="metal surface with scratches")
     model: EnumProperty(name="Model", items=[
-        ('dalle', 'DALL-E', ''),
-        ('stable_diffusion', 'Stable Diffusion', ''),
-        ('midjourney', 'Midjourney', '')
+        ('dalle', 'DALL-E', 'Generate with DALL-E'),
+        ('stable_diffusion', 'Stable Diffusion', 'Generate with Stable Diffusion'),
+        ('midjourney', 'Midjourney', 'Generate with Midjourney')
     ], default='stable_diffusion')
     style: EnumProperty(name="Style", items=[
-        ('realistic', 'Realistic', ''),
-        ('stylized', 'Stylized', ''),
-        ('cartoon', 'Cartoon', ''),
-        ('abstract', 'Abstract', '')
+        ('realistic', 'Realistic', 'Realistic material'),
+        ('stylized', 'Stylized', 'Stylized material'),
+        ('cartoon', 'Cartoon', 'Cartoon material'),
+        ('abstract', 'Abstract', 'Abstract material')
     ], default='realistic')
 
 class GenerateMaterialOperator(Operator):
@@ -41,11 +41,11 @@ class GenerateMaterialOperator(Operator):
         prompt = context.scene.blender_ai_material.prompt
         self.report({'INFO'}, f"Generating material: {prompt}")
         
-        # إنشاء مادة بسيطة
+        # Create simple material
         mat = bpy.data.materials.new(name=f"AI_{prompt[:10]}")
         mat.use_nodes = True
         
-        # تطبيق على الكائن المحدد
+        # Apply to selected object
         obj = context.active_object
         if obj and obj.type == 'MESH':
             if obj.data.materials:
@@ -61,10 +61,10 @@ class GenerateMaterialOperator(Operator):
 
 class AILightingSettings(PropertyGroup):
     style: EnumProperty(name="Lighting Style", items=[
-        ('balanced', 'Balanced', ''),
-        ('dramatic', 'Dramatic', ''),
-        ('bright', 'Bright', ''),
-        ('dark', 'Dark', '')
+        ('balanced', 'Balanced', 'Balanced lighting'),
+        ('dramatic', 'Dramatic', 'Dramatic lighting'),
+        ('bright', 'Bright', 'Bright lighting'),
+        ('dark', 'Dark', 'Dark lighting')
     ], default='balanced')
 
 class OptimizeLightingOperator(Operator):
@@ -73,7 +73,7 @@ class OptimizeLightingOperator(Operator):
     bl_options = {'REGISTER', 'UNDO'}
     
     def execute(self, context):
-        # إضافة إضاءة ثلاثية
+        # Add three-point lighting
         bpy.ops.object.light_add(type='SUN', location=(5, 5, 10))
         sun = context.active_object
         sun.data.energy = 3
@@ -82,7 +82,7 @@ class OptimizeLightingOperator(Operator):
         fill = context.active_object
         fill.data.energy = 1
         
-        self.report({'INFO'}, "✅ Lighting optimized!")
+        self.report({'INFO'}, "Lighting optimized!")
         return {'FINISHED'}
 
 # =============================================================================
@@ -92,11 +92,11 @@ class OptimizeLightingOperator(Operator):
 class AIModelSettings(PropertyGroup):
     prompt: StringProperty(name="Description", default="red apple")
     style: EnumProperty(name="Style", items=[
-        ('simple', 'Simple', ''),
-        ('detailed', 'Detailed', ''),
-        ('realistic', 'Realistic', ''),
-        ('stylized', 'Stylized', ''),
-        ('cartoon', 'Cartoon', '')
+        ('simple', 'Simple', 'Simple model'),
+        ('detailed', 'Detailed', 'Detailed model'),
+        ('realistic', 'Realistic', 'Realistic model'),
+        ('stylized', 'Stylized', 'Stylized model'),
+        ('cartoon', 'Cartoon', 'Cartoon model')
     ], default='detailed')
     subdivision: IntProperty(name="Subdivision", default=2, min=0, max=6)
 
@@ -108,16 +108,16 @@ class GenerateModelOperator(Operator):
     def execute(self, context):
         prompt = context.scene.blender_ai_model.prompt
         
-        # إنشاء نموذج بسيط
+        # Create simple model
         bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=2, radius=1)
         obj = context.active_object
         obj.name = f"AI_{prompt}"
         
-        # تطبيق subdivision
+        # Apply subdivision
         subsurf = obj.modifiers.new(name="Subdivision", type='SUBSURF')
         subsurf.levels = context.scene.blender_ai_model.subdivision
         
-        self.report({'INFO'}, f"✅ Generated: {obj.name}")
+        self.report({'INFO'}, f"Generated: {obj.name}")
         return {'FINISHED'}
 
 class CreatePrimitiveOperator(Operator):
@@ -126,10 +126,10 @@ class CreatePrimitiveOperator(Operator):
     bl_options = {'REGISTER', 'UNDO'}
     
     primitive_type: EnumProperty(name="Type", items=[
-        ('CUBE', 'Cube', ''),
-        ('SPHERE', 'Sphere', ''),
-        ('CYLINDER', 'Cylinder', ''),
-        ('TORUS', 'Torus', '')
+        ('CUBE', 'Cube', 'Create cube'),
+        ('SPHERE', 'Sphere', 'Create sphere'),
+        ('CYLINDER', 'Cylinder', 'Create cylinder'),
+        ('TORUS', 'Torus', 'Create torus')
     ])
     
     def execute(self, context):
@@ -150,8 +150,8 @@ class CreatePrimitiveOperator(Operator):
 
 class AutoRiggingSettings(PropertyGroup):
     rig_type: EnumProperty(name="Rig Type", items=[
-        ('human', 'Human', ''),
-        ('quadruped', 'Quadruped', '')
+        ('human', 'Human', 'Human character rig'),
+        ('quadruped', 'Quadruped', 'Four-legged animal rig')
     ], default='human')
 
 class GenerateRigOperator(Operator):
@@ -165,19 +165,19 @@ class GenerateRigOperator(Operator):
             self.report({'ERROR'}, "Select a mesh object!")
             return {'CANCELLED'}
         
-        # إنشاء armature بسيط
+        # Create simple armature
         bpy.ops.object.armature_add(enter_editmode=True)
         armature = context.active_object
         armature.name = f"{obj.name}_Rig"
         
-        # الخروج من edit mode
+        # Exit edit mode
         bpy.ops.object.mode_set(mode='OBJECT')
         
-        # ربط الكائن بالهيكل
+        # Parent object to armature
         obj.parent = armature
         obj.parent_type = 'ARMATURE'
         
-        self.report({'INFO'}, f"✅ Rig created: {armature.name}")
+        self.report({'INFO'}, f"Rig created: {armature.name}")
         return {'FINISHED'}
 
 # =============================================================================
@@ -186,10 +186,10 @@ class GenerateRigOperator(Operator):
 
 class AIAnimationSettings(PropertyGroup):
     anim_type: EnumProperty(name="Animation Type", items=[
-        ('walk', 'Walk', ''),
-        ('run', 'Run', ''),
-        ('idle', 'Idle', ''),
-        ('wave', 'Wave', '')
+        ('walk', 'Walk', 'Walk cycle animation'),
+        ('run', 'Run', 'Run cycle animation'),
+        ('idle', 'Idle', 'Idle breathing animation'),
+        ('wave', 'Wave', 'Wave hand animation')
     ], default='walk')
     frames: IntProperty(name="Frames", default=24, min=1, max=500)
 
@@ -207,17 +207,17 @@ class GenerateAnimationOperator(Operator):
         anim_type = context.scene.blender_ai_animation.anim_type
         frames = context.scene.blender_ai_animation.frames
         
-        # إنشاء حركة بسيطة
+        # Create simple animation
         scene = context.scene
         start = scene.frame_current
         
         for frame in range(start, start + frames):
             scene.frame_set(frame)
-            # هنا يتم إضافة keyframes
+            # Add keyframes here
             
         scene.frame_set(start)
         
-        self.report({'INFO'}, f"✅ Generated {anim_type} animation ({frames} frames)")
+        self.report({'INFO'}, f"Generated {anim_type} animation ({frames} frames)")
         return {'FINISHED'}
 
 # =============================================================================
@@ -225,7 +225,7 @@ class GenerateAnimationOperator(Operator):
 # =============================================================================
 
 class BlenderAICompletePanel(Panel):
-    bl_label = "🎨 Blender AI Complete"
+    bl_label = "AI Tools"
     bl_idname = "VIEW3D_PT_blender_ai_complete"
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
@@ -234,26 +234,26 @@ class BlenderAICompletePanel(Panel):
     def draw(self, context):
         layout = self.layout
         
-        # قسم المواد
+        # Material section
         box = layout.box()
-        box.label(text="🎯 Material Generator", icon='MATERIAL')
+        box.label(text="Material Generator", icon='MATERIAL')
         box.prop(context.scene.blender_ai_material, "prompt")
         box.prop(context.scene.blender_ai_material, "style")
         box.operator("blender_ai.generate_material", text="Generate Material")
         
         layout.separator()
         
-        # قسم الإضاءة
+        # Lighting section
         box = layout.box()
-        box.label(text="💡 Lighting", icon='LIGHT')
+        box.label(text="Lighting", icon='LIGHT')
         box.prop(context.scene.blender_ai_lighting, "style")
         box.operator("blender_ai.optimize_lighting", text="Optimize Lighting")
         
         layout.separator()
         
-        # قسم النماذج
+        # Model section
         box = layout.box()
-        box.label(text="🎨 Model Generator", icon='MESH_CUBE')
+        box.label(text="Model Generator", icon='MESH_CUBE')
         box.prop(context.scene.blender_ai_model, "prompt")
         box.prop(context.scene.blender_ai_model, "style")
         box.prop(context.scene.blender_ai_model, "subdivision")
@@ -265,17 +265,17 @@ class BlenderAICompletePanel(Panel):
         
         layout.separator()
         
-        # قسم الرقمنة
+        # Rigging section
         box = layout.box()
-        box.label(text="🦴 Auto Rigging", icon='ARMATURE_DATA')
+        box.label(text="Auto Rigging", icon='ARMATURE_DATA')
         box.prop(context.scene.blender_ai_rigging, "rig_type")
         box.operator("blender_ai.generate_rig", text="Generate Rig")
         
         layout.separator()
         
-        # قسم التحريك
+        # Animation section
         box = layout.box()
-        box.label(text="🎬 Animation", icon='ANIM')
+        box.label(text="Animation", icon='ANIM')
         box.prop(context.scene.blender_ai_animation, "anim_type")
         box.prop(context.scene.blender_ai_animation, "frames")
         box.operator("blender_ai.generate_animation", text="Generate Animation")
