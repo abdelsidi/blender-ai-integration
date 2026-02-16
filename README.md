@@ -1,260 +1,193 @@
-# Blender AI Integration
+# AI Image to 3D Scene - Blender Addon
 
+[![Blender](https://img.shields.io/badge/Blender-3.6+-green.svg)](https://www.blender.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Python](https://img.shields.io/badge/Python-3.8%2B-blue.svg)](https://www.python.org/)
-[![Blender](https://img.shields.io/badge/Blender-3.0%2B-green.svg)](https://www.blender.org/)
 
-🎨 مجموعة إضافات قوية لتكامل الذكاء الاصطناعي مع Blender، مما يتيح لك إنشاء محتوى إبداعي متقدم بسرعة وكفاءة.
+> **🚀 Transform any photo into a complete 3D scene with AI**
 
-## ✨ الميزات
+Transform flat 2D images into immersive 3D environments using AI-powered depth estimation, object detection, and automatic scene generation.
 
-### 🎯 AI Material Generator
-- إنشاء مواد واقعية باستخدام DALL-E, Stable Diffusion, و Midjourney
-- دعم أنواع مختلفة من المواد (معدنية، خشبية، قماش، إلخ)
-- تطبيق تلقائي للمواد على الكائنات المحددة
+![Workflow](docs/images/workflow.jpg)
 
-### 💡 AI Lighting
-- تحليل تلقائي للإضاءة في المشهد
-- اقتراحات تحسين الإضاءة من قبل الذكاء الاصطناعي
-- تطبيق تلقائي للتحسينات
+## ✨ What It Does
 
-### 🎨 AI Model Generator
-- توليد نماذج ثلاثية الأبعاد من النصوص
-- تحويل الصور إلى نماذج 3D
-- نماذج بدائية سريعة (مكعب، كرة، أسطوانة، حلقة)
-- تحسين تلقائي للشبكة (Mesh Optimization)
-- دعم تقسيم الأسطح (Subdivision)
-- مواد متعددة (طين، معدن، بلاستيك)
+This addon converts **any photo** into a **complete 3D scene** in Blender:
 
-### 🦴 Auto-Rigging AI
-- رقمنة تلقائية للشخصيات البشرية والحيوانات
-- تحليل ذكي للشبكة لتحديد أماكن المفاصل
-- هيكل عظمي احترافي مع تسميات واضحة
-- إضافة قيود IK (العكسية الحركية)
-- ربط تلقائي للشبكة بالهيكل
+1. 📸 **Import** - Load your JPG/PNG photo
+2. 🧠 **Analyze** - AI extracts colors, objects, and lighting
+3. 🗺️ **Depth** - Generate depth map automatically  
+4. 🎨 **Create** - Build 3D scene with geometry, materials & lighting
 
-### 🎬 AI Animation
-- إنشاء حركات واقعية باستخدام الذكاء الاصطناعي
-- أنواع متعددة: مشي، جري، خمول، تحية
-- اختصارات سريعة للحركات الشائعة
-- تنعيم تلقائي للحركة
-- عكس الحركة من جانب لآخر
+## 🎯 Perfect For
 
-## 🚀 التثبيت السريع
+- 🏠 **Architects** - Turn photos into 3D walkthroughs
+- 🎮 **Game Devs** - Quick environment prototyping
+- 🎬 **Filmmakers** - Create 3D backgrounds from photos
+- 🎨 **Artists** - Experiment with photo-based 3D art
 
-### ⚡ الطريقة الأسهل (إضافة واحدة كاملة)
+## ⚡ Quick Start
 
-1. **حمل الملف الجاهز:**
-   - اذهب إلى [Releases](https://github.com/abdelsidi/blender-ai-integration/releases)
-   - حمل `blender_ai_complete.zip`
+### Installation
 
-2. **ثبت في Blender:**
-   - افتح Blender
-   - **Edit > Preferences > Add-ons > Install**
-   - اختر ملف `blender_ai_complete.zip`
-   - فعّل الإضافة ✅
+1. Download `ai_image_to_scene.zip` from [Releases](../../releases)
+2. In Blender: `Edit > Preferences > Add-ons > Install`
+3. Select the ZIP file
+4. Enable "AI Image to 3D Scene"
 
-3. **ابدأ الاستخدام:**
-   - اضغط **N** في الـ View3D
-   - ستجد لوحة **"AI Tools"** في الشريط الجانبي
+### Usage
 
-📖 **[دليل التثبيت المفصل](INSTALLATION_GUIDE.md)** - إذا واجهت مشاكل
+```
+1. Press N in 3D Viewport
+2. Open "AI Image Scene" tab
+3. Click "Load & Analyze Image"
+4. Select your photo
+5. Click "CREATE 3D SCENE"
+```
+
+That's it! Your photo is now a 3D scene.
+
+## 🎬 How It Works
+
+```
+Photo Input → AI Analysis → Depth Map → 3D Mesh → Complete Scene
+    (2D)        (Colors,       (B&W)     (Displaced    (Materials +
+                Objects)                Terrain)       Lighting)
+```
+
+### AI Analysis Includes:
+- 🎨 **Color Extraction** - Dominant colors from photo
+- 🔍 **Object Detection** - Identifies main elements
+- 🗺️ **Depth Estimation** - Calculates distance info
+- 💡 **Lighting Direction** - Estimates light source
+- 🏷️ **Scene Type** - Classifies indoor/outdoor
+
+## 📦 Features
+
+### Core Features
+- ✅ **One-click import** of any JPG/PNG
+- ✅ **Automatic depth** generation from single image
+- ✅ **Smart object detection** and 3D placement
+- ✅ **Color-matched materials** from photo
+- ✅ **Auto lighting** setup (3-point system)
+- ✅ **Ground plane** generation
+- ✅ **Displacement mapping** for terrain detail
+- ✅ **Camera setup** with optimal angle
+
+### Advanced Options
+- Adjustable depth strength (0.1x - 3.0x)
+- Mesh detail control (1-6 subdivision levels)
+- Quality modes (Fast/Balanced/Best)
+- Toggle ground/objects/lighting individually
+
+## 🖼️ Example Scenes
+
+| Input Photo | Output Scene |
+|-------------|--------------|
+| Mountain landscape | 3D terrain with peaks/valleys |
+| City street | Buildings with depth + street lights |
+| Living room | Furniture as 3D objects + proper lighting |
+| Beach sunset | Ocean plane + sun lighting + sky color |
+
+## 📋 Requirements
+
+- **Blender** 3.6 or higher
+- **OpenCV** (auto-installed)
+- **NumPy** (auto-installed)  
+- **PIL** (auto-installed)
+
+## 🎮 UI Overview
+
+```
+┌─────────────────────────────┐
+│  AI Image to 3D Scene       │
+├─────────────────────────────┤
+│  Step 1: Import Image       │
+│  [Browse...] [Load Photo]   │
+├─────────────────────────────┤
+│  Step 2: Generate Depth     │
+│  Quality: [Medium ▼]        │
+│  Strength: [────●───] 1.0   │
+│  [Generate Depth Map]       │
+├─────────────────────────────┤
+│  Step 3: Create 3D Scene    │
+│  [✓] Ground Plane           │
+│  [✓] Detect Objects         │
+│  [✓] Auto Lighting          │
+│                             │
+│  [ CREATE 3D SCENE ]        │
+└─────────────────────────────┘
+```
+
+## 🆚 vs Video-to-3D
+
+| | Image to 3D | Video to 3D |
+|---|-------------|-------------|
+| **Input** | Single photo | Video file |
+| **Output** | Static scene | Animated scene |
+| **Speed** | 10-30 seconds | 2-5 minutes |
+| **Best For** | Architecture, landscapes | Motion, characters |
+
+## 🛠️ Technical Details
+
+### Scene Generation Pipeline
+1. **Image Loading** - OpenCV reads image
+2. **K-Means Clustering** - Extracts dominant colors
+3. **Contour Detection** - Identifies objects
+4. **Gradient Analysis** - Estimates depth
+5. **Mesh Displacement** - Creates 3D terrain
+6. **Material Nodes** - Builds shader networks
+7. **Lighting Setup** - 3-point lighting system
+
+### Generated Elements
+- **Ground Plane** - 20x20 units with subdivision
+- **Depth Mesh** - 50x subdivided displaced plane
+- **Detected Objects** - Cubes/cylinders based on shape
+- **Materials** - Principled BSDF with image textures
+- **Lights** - Sun + Area + Spot lights
+- **Camera** - Positioned at optimal angle
+
+## 🐛 Troubleshooting
+
+| Problem | Solution |
+|---------|----------|
+| "Image not found" | Check file exists and path is correct |
+| Slow generation | Use "Low" quality setting |
+| Flat 3D result | Increase "Depth Strength" slider |
+| Wrong colors | Enable "Use Image Colors" checkbox |
+| No objects created | Photo may lack clear objects - try landscapes |
+
+## 📸 Best Photo Tips
+
+✅ **Works Great:**
+- Landscapes with foreground/background
+- Architecture photos
+- Rooms with furniture
+- City streets
+
+⚠️ **Okay Results:**
+- Close-ups
+- Portraits
+- Abstract images
+
+❌ **Avoid:**
+- Solid color images
+- Very blurry photos
+- Logos/text only
+
+## 📝 License
+
+MIT License - See [LICENSE](../LICENSE)
+
+## 🤝 Contributing
+
+Contributions welcome! See [CONTRIBUTING.md](../CONTRIBUTING.md)
+
+## 🙏 Credits
+
+Inspired by AI workflows combining computer vision with 3D graphics.
 
 ---
 
-## 📦 الطريقة المتقدمة (تثبيت منفصل)
+**[Download Latest Release](../../releases)** | **[Full Documentation](../docs)** | **[Report Issues](../../issues)**
 
-### المتطلبات
-- Blender 3.0 أو أحدث
-- Python 3.8 أو أحدث
-
-### التثبيت من GitHub
-
-1. قم بتنزيل الإضافات:
-```bash
-git clone https://github.com/abdelsidi/blender-ai-integration.git
-```
-
-2. انتقل إلى مجلد الإضافات:
-```bash
-cd blender-ai-integration/addons
-```
-
-3. قم بنسخ الإضافات إلى مجلد إضافات Blender:
-```bash
-# Linux/Mac
-cp -r ai_material_generator ~/.config/blender/3.0/scripts/addons/
-cp -r ai_lighting ~/.config/blender/3.0/scripts/addons/
-cp -r ai_model_generator ~/.config/blender/3.0/scripts/addons/
-cp -r auto_rigging_ai ~/.config/blender/3.0/scripts/addons/
-cp -r ai_animation ~/.config/blender/3.0/scripts/addons/
-
-# Windows (Command Prompt)
-xcopy /E /I ai_material_generator "%USERPROFILE%\AppData\Roaming\Blender Foundation\Blender\3.0\scripts\addons\"
-xcopy /E /I ai_lighting "%USERPROFILE%\AppData\Roaming\Blender Foundation\Blender\3.0\scripts\addons\"
-xcopy /E /I ai_model_generator "%USERPROFILE%\AppData\Roaming\Blender Foundation\Blender\3.0\scripts\addons\"
-xcopy /E /I auto_rigging_ai "%USERPROFILE%\AppData\Roaming\Blender Foundation\Blender\3.0\scripts\addons\"
-xcopy /E /I ai_animation "%USERPROFILE%\AppData\Roaming\Blender Foundation\Blender\3.0\scripts\addons\"
-```
-
-4. افتح Blender وفعّل الإضافات:
-   - اذهب إلى Edit > Preferences > Add-ons
-   - ابحث عن "AI" وفعّل الإضافات المطلوبة
-
-### التثبيت عبر pip (للمطورين)
-
-```bash
-git clone https://github.com/abdelsidi/blender-ai-integration.git
-cd blender-ai-integration
-pip install -r requirements.txt
-pip install -e .
-```
-
-## 📝 الاستخدام
-
-### AI Material Generator
-
-1. حدد الكائن الذي تريد تطبيق المادة عليه
-2. اذهب إلى View3D > Sidebar > AI Tools > Material Generator
-3. أدخل وصف المادة في حقل الـ Prompt
-4. اختر النموذج AI المطلوب
-5. اختر الأسلوب المطلوب
-6. انقر على "Generate Material"
-7. انقر على "Apply Material" لتطبيق المادة على الكائن
-
-### AI Lighting
-
-1. افتح المشهد الذي تريد تحسين إضاءته
-2. اذهب إلى View3D > Sidebar > AI Tools > Lighting
-3. اختر أسلوب الإضاءة المطلوب
-4. انقر على "Optimize Lighting"
-5. سيقوم الذكاء الاصطناعي بتحليل الإضاءة وتقديم التحسينات
-
-### 🎨 AI Model Generator
-
-#### التوليد من النص:
-1. اذهب إلى View3D > Sidebar > AI Tools > Model Generator
-2. أدخل وصف النموذج في حقل "الوصف"
-   - مثال: "تفاحة حمراء"
-   - مثال: "كرسي خشبي عتيق"
-3. اختر الأسلوب: بسيط، تفصيلي، واقعي، أسلوبي، كرتوني
-4. اختر دقة النموذج
-5. اختر نوع المادة (طين، معدن، بلاستيك)
-6. اضبط مستوى التقسيم (Subdivision)
-7. انقر على "توليد من النص"
-
-#### النماذج السريعة:
-- اضغط على أزرار "مكعب"، "كرة"، "أسطوانة"، "حلقة" للإنشاء الفوري
-
-### 🦴 Auto-Rigging AI
-
-1. حدد شخصيتك (يجب أن تكون شبكة - Mesh)
-2. تأكد من أن الشخصية في وضع T-Pose
-3. اذهب إلى View3D > Sidebar > AI Tools > Auto Rigging
-4. اضغط "تحليل الشبكة" للتحقق من النتائج
-5. اختر نوع الشخصية (بشري/رباعي)
-6. فعّل خيار "إضافة IK" إذا أردت
-7. انقر على "Generate Rig"
-8. سيتم إنشاء الهيكل العظمي وربطه بالشبكة
-
-### 🎬 AI Animation
-
-1. حدد الهيكل العظمي (Armature)
-2. اذهب إلى View3D > Sidebar > AI Tools > Animation
-3. اختر نوع الحركة:
-   - **مشي:** دورة مشي 24 إطار
-   - **جري:** دورة جري 16 إطار
-   - **خمول:** حركة تنفس 120 إطار
-   - **تحية:** تلويح باليد 48 إطار
-4. أو استخدم الاختصارات السريعة في قسم "⚡ اختصارات"
-5. اضغط "Generate Animation"
-6. اضغط Play (⏵) لمعاينة الحركة!
-
-## 📁 هيكل المشروع
-
-```
-blender-ai-integration/
-├── 📄 README.md                 # هذا الملف
-├── 📄 LICENSE                   # ترخيص MIT
-├── 📄 requirements.txt          # متطلبات Python
-├── 📄 setup.py                  # إعدادات التثبيت
-├── 📄 .gitignore               # استبعاد الملفات
-├── 📄 .env.example             # نموذج متغيرات البيئة
-├── 📁 config/
-│   └── config.yaml.example     # نموذج الإعدادات
-├── 📁 addons/                   # الإضافات
-│   ├── ai_material_generator/  # توليد المواد
-│   ├── ai_lighting/            # تحسين الإضاءة
-│   ├── ai_model_generator/     # توليد النماذج 3D
-│   ├── auto_rigging_ai/        # الرقمنة التلقائية
-│   └── ai_animation/           # التحريك بالذكاء
-├── 📁 docs/                     # الوثائق
-│   ├── ADDON_INSTALLATION.md
-│   ├── USER_GUIDE.md
-│   ├── AI_MODEL_GENERATOR.md
-│   ├── AUTO_RIGGING_AI.md
-│   └── AI_ANIMATION.md
-├── 📁 examples/                 # أمثلة
-├── 📁 tests/                    # الاختبارات
-├── 📁 assets/                   # الأصول
-└── 📁 scripts/                  # سكربتات المساعدة
-```
-
-## 🔧 الإعدادات
-
-### إعداد مفاتيح API
-
-انسخ ملف `.env.example` إلى `.env` وأضف مفاتيحك:
-
-```bash
-cp .env.example .env
-```
-
-ثم عدل الملف:
-```env
-OPENAI_API_KEY=your_key_here
-STABILITY_API_KEY=your_key_here
-REPLICATE_API_TOKEN=your_token_here
-```
-
-### إعدادات متقدمة
-
-انسخ `config/config.yaml.example` إلى `config/config.yaml` للتحكم في الإعدادات المتقدمة.
-
-## 🎯 سير عمل مُقترح
-
-### لشخصية كاملة:
-1. **إنشاء النموذج:** استخدم AI Model Generator
-2. **التلوين:** استخدم AI Material Generator
-3. **الرقمنة:** استخدم Auto Rigging AI
-4. **التحريك:** استخدم AI Animation
-5. **الإضاءة:** استخدم AI Lighting للإضاءة النهائية
-
-## 🤝 المساهمة
-
-نرحب بالمساهمات! يمكنك:
-- الإبلاغ عن الأخطاء عبر [GitHub Issues](https://github.com/abdelsidi/blender-ai-integration/issues)
-- اقتراح ميزات جديدة
-- إرسال طلبات السحب (Pull Requests)
-
-## 📄 الترخيص
-
-هذا المشروع مرخص بموجب [MIT License](LICENSE)
-
-## 📧 التواصل
-
-- GitHub Issues: [المشاكل والاقتراحات](https://github.com/abdelsidi/blender-ai-integration/issues)
-- البريد الإلكتروني: abdelsidi4@gmail.com
-
----
-
-**ملاحظة:** هذا المشروع قيد التطوير النشط. بعض الميزات قد تكون تجريبية.
-
-## 🌟 قريباً
-
-- ✨ دمج Point-E و Shap-E من OpenAI
-- ✨ دعم DreamFusion و Magic3D
-- ✨ توليد حركات باستخدام Video-to-Animation
-- ✨ دعم اللغة العربية الكامل في الواجهة
-- ✨ أنظمة جسيمات ذكية
-- ✨ محاكاة قماش AI-powered
+*Transform your photos into worlds.*
