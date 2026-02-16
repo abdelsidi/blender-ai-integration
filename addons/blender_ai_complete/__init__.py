@@ -181,6 +181,128 @@ class GenerateRigOperator(Operator):
         return {'FINISHED'}
 
 # =============================================================================
+# AI PROMPT GENERATOR - MESH & TEXTURE
+# =============================================================================
+
+class AIPromptGeneratorSettings(PropertyGroup):
+    prompt: StringProperty(
+        name="Prompt",
+        description="Describe what you want to generate",
+        default="a red apple with green leaves"
+    )
+    generate_mesh: BoolProperty(name="Generate Mesh", default=True)
+    generate_texture: BoolProperty(name="Generate Texture", default=True)
+    auto_apply: BoolProperty(name="Auto Apply", default=True)
+
+class GenerateFromPromptOperator(Operator):
+    bl_idname = "blender_ai.generate_from_prompt"
+    bl_label = "Generate from Prompt"
+    bl_description = "Generate mesh and/or texture from text prompt"
+    bl_options = {'REGISTER', 'UNDO'}
+    
+    def execute(self, context):
+        settings = context.scene.blender_ai_prompt
+        prompt = settings.prompt
+        
+        self.report({'INFO'}, f"Processing prompt: {prompt}")
+        
+        # Create object name from prompt
+        obj_name = f"AI_{prompt.replace(' ', '_')[:20]}"
+        
+        # Generate Mesh
+        if settings.generate_mesh:
+            # Create base mesh based on prompt keywords
+            if any(word in prompt.lower() for word in ['ball', 'sphere', 'apple', 'fruit', 'planet']):
+                bpy.ops.mesh.primitive_uv_sphere_add(radius=1, segments=32, ring_count=16)
+            elif any(word in prompt.lower() for word in ['box', 'cube', 'block', 'building']):
+                bpy.ops.mesh.primitive_cube_add(size=2)
+            elif any(word in prompt.lower() for word in ['cylinder', 'can', 'bottle', 'tube']):
+                bpy.ops.mesh.primitive_cylinder_add(radius=1, depth=2)
+            elif any(word in prompt.lower() for word in ['torus', 'donut', 'ring']):
+                bpy.ops.mesh.primitive_torus_add(major_radius=1, minor_radius=0.25)
+            elif any(word in prompt.lower() for word in ['monkey', 'head', 'face']):
+                bpy.ops.mesh.primitive_monkey_add(size=2)
+            else:
+                # Default to icosphere for organic shapes
+                bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=2, radius=1)
+            
+            obj = context.active_object
+            obj.name = obj_name
+            
+            # Add subdivision for better quality
+            subsurf = obj.modifiers.new(name="Subdivision", type='SUBSURF')
+            subsurf.levels = 2
+            
+            self.report({'INFO'}, f"Created mesh: {obj.name}")
+        
+        # Generate Texture
+        if settings.generate_texture:
+            # Create material
+            mat_name = f"AI_Material_{prompt[:15]}"
+            mat = bpy.data.materials.new(name=mat_name)
+            mat.use_nodes = True
+            nodes = mat.node_tree.nodes
+            nodes.clear()
+            
+            # Add Principled BSDF
+            principled = nodes.new(type='ShaderNodeBsdfPrincipled')
+            principled.location = (0, 0)
+            
+            # Set color based on prompt keywords
+            color = (0.8, 0.8, 0.8, 1.0)  # default gray
+            if 'red' in prompt.lower():
+                color = (0.8, 0.1, 0.1, 1.0)
+            elif 'blue' in prompt.lower():
+                color = (0.1, 0.3, 0.8, 1.0)
+            elif 'green' in prompt.lower():
+                color = (0.1, 0.7, 0.2, 1.0)
+            elif 'yellow' in prompt.lower():
+                color = (0.9, 0.8, 0.1, 1.0)
+            elif 'white' in prompt.lower():
+                color = (0.95, 0.95, 0.95, 1.0)
+            elif 'black' in prompt.lower():
+                color = (0.05, 0.05, 0.05, 1.0)
+            elif 'brown' in prompt.lower():
+                color = (0.4, 0.25, 0.1, 1.0)
+            elif 'orange' in prompt.lower():
+                color = (0.9, 0.5, 0.1, 1.0)
+            elif 'purple' in prompt.lower():
+                color = (0.6, 0.1, 0.8, 1.0)
+            
+            principled.inputs['Base Color'].default_value = color
+            
+            # Set material properties based on keywords
+            if any(word in prompt.lower() for word in ['metal', 'steel', 'iron', 'gold', 'silver']):
+                principled.inputs['Metallic'].default_value = 0.9
+                principled.inputs['Roughness'].default_value = 0.3
+            elif any(word in prompt.lower() for word in ['plastic', 'rubber']):
+                principled.inputs['Roughness'].default_value = 0.4
+            elif any(word in prompt.lower() for word in ['glass', 'crystal', 'ice']):
+                principled.inputs['Transmission'].default_value = 0.9
+                principled.inputs['Roughness'].default_value = 0.1
+            elif any(word in prompt.lower() for word in ['matte', 'clay', 'chalk']):
+                principled.inputs['Roughness'].default_value = 0.9
+            
+            # Add Material Output
+            output = nodes.new(type='ShaderNodeOutputMaterial')
+            output.location = (300, 0)
+            
+            # Link nodes
+            mat.node_tree.links.new(principled.outputs['BSDF'], output.inputs['Surface'])
+            
+            # Apply to object
+            obj = context.active_object
+            if obj and obj.type == 'MESH':
+                if obj.data.materials:
+                    obj.data.materials[0] = mat
+                else:
+                    obj.data.materials.append(mat)
+            
+            self.report({'INFO'}, f"Created material: {mat.name}")
+        
+        return {'FINISHED'}
+
+# =============================================================================
 # AI ANIMATION
 # =============================================================================
 
@@ -234,6 +356,23 @@ class BlenderAICompletePanel(Panel):
     def draw(self, context):
         layout = self.layout
         
+        # AI Prompt Generator - Main Feature
+        box = layout.box()
+        box.label(text="AI Prompt Generator", icon='SCRIPT')
+        box.prop(context.scene.blender_ai_prompt, "prompt")
+        
+        row = box.row()
+        row.prop(context.scene.blender_ai_prompt, "generate_mesh")
+        row.prop(context.scene.blender_ai_prompt, "generate_texture")
+        
+        box.prop(context.scene.blender_ai_prompt, "auto_apply")
+        
+        row = box.row()
+        row.scale_y = 1.5
+        row.operator("blender_ai.generate_from_prompt", text="Generate from Prompt", icon='PLAY')
+        
+        layout.separator()
+        
         # Material section
         box = layout.box()
         box.label(text="Material Generator", icon='MATERIAL')
@@ -286,6 +425,7 @@ class BlenderAICompletePanel(Panel):
 
 classes = [
     # Property Groups
+    AIPromptGeneratorSettings,
     AIMaterialGeneratorSettings,
     AILightingSettings,
     AIModelSettings,
@@ -293,6 +433,7 @@ classes = [
     AIAnimationSettings,
     
     # Operators
+    GenerateFromPromptOperator,
     GenerateMaterialOperator,
     OptimizeLightingOperator,
     GenerateModelOperator,
@@ -308,6 +449,7 @@ def register():
     for cls in classes:
         bpy.utils.register_class(cls)
     
+    bpy.types.Scene.blender_ai_prompt = bpy.props.PointerProperty(type=AIPromptGeneratorSettings)
     bpy.types.Scene.blender_ai_material = bpy.props.PointerProperty(type=AIMaterialGeneratorSettings)
     bpy.types.Scene.blender_ai_lighting = bpy.props.PointerProperty(type=AILightingSettings)
     bpy.types.Scene.blender_ai_model = bpy.props.PointerProperty(type=AIModelSettings)
@@ -318,6 +460,7 @@ def unregister():
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)
     
+    del bpy.types.Scene.blender_ai_prompt
     del bpy.types.Scene.blender_ai_material
     del bpy.types.Scene.blender_ai_lighting
     del bpy.types.Scene.blender_ai_model
