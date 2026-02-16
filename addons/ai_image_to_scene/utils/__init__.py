@@ -1,7 +1,5 @@
-from . import scene_tools
-
 def register():
-    scene_tools.register()
+    pass
 
 def unregister():
-    scene_tools.unregister()
+    pass

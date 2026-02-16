@@ -1,3 +1,5 @@
+from .scene_generator import ImageToSceneCore
+
 def register():
     pass
 
