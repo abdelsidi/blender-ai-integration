@@ -2,8 +2,8 @@ import bpy
 from bpy.types import Panel, Operator
 
 class AIAnimationPanel(Panel):
-    """لوحة التحريك بالذكاء الاصطناعي"""
-    bl_label = "🎬 AI Animation"
+    """AI Animation Panel"""
+    bl_label = "AI Animation"
     bl_idname = "VIEW3D_PT_ai_animation"
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
@@ -13,21 +13,21 @@ class AIAnimationPanel(Panel):
         layout = self.layout
         scene = context.scene
         
-        # قسم نوع الحركة
+        # Animation type section
         box = layout.box()
-        box.label(text="🎭 نوع الحركة", icon='ARMATURE_DATA')
+        box.label(text="Animation Type", icon='ARMATURE_DATA')
         
         row = box.row()
         row.prop(scene, "ai_animation_type", text="")
         
         row = box.row()
-        row.prop(scene, "ai_animation_frames", text="الإطارات")
+        row.prop(scene, "ai_animation_frames", text="Frames")
         
         layout.separator()
         
-        # قسم التوليد
+        # Generate section
         box = layout.box()
-        box.label(text="⚡ توليد الحركة", icon='PLAY')
+        box.label(text="Generate Animation", icon='PLAY')
         
         row = box.row()
         row.scale_y = 1.3
@@ -37,35 +37,35 @@ class AIAnimationPanel(Panel):
         
         layout.separator()
         
-        # قسم التحسينات
+        # Enhancements section
         box = layout.box()
-        box.label(text="🔧 تحسينات", icon='MODIFIER')
+        box.label(text="Enhancements", icon='MODIFIER')
         
         row = box.row()
-        row.operator("ai_animation.smooth", text="تنعيم", icon='SMOOTHCURVE')
+        row.operator("ai_animation.smooth", text="Smooth", icon='SMOOTHCURVE')
         
         row = box.row()
-        row.operator("ai_animation.mirror", text="عكس الحركة", icon='MOD_MIRROR')
+        row.operator("ai_animation.mirror", text="Mirror", icon='MOD_MIRROR')
         
         row = box.row()
-        row.prop(scene, "ai_animation_mirror_side", text="الجانب")
+        row.prop(scene, "ai_animation_mirror_side", text="Side")
         
         layout.separator()
         
-        # قسم الاختصارات
+        # Quick actions section
         box = layout.box()
-        box.label(text="⚡ اختصارات", icon='TIME')
+        box.label(text="Quick Actions", icon='TIME')
         
         row = box.row(align=True)
-        row.operator("ai_animation.quick_walk", text="مشي", icon='ANIM')
-        row.operator("ai_animation.quick_run", text="جري", icon='ANIM')
+        row.operator("ai_animation.quick_walk", text="Walk", icon='ANIM')
+        row.operator("ai_animation.quick_run", text="Run", icon='ANIM')
         
         row = box.row(align=True)
-        row.operator("ai_animation.quick_idle", text="خمول", icon='PAUSE')
-        row.operator("ai_animation.quick_wave", text="تحية", icon='VIEW_HAND')
+        row.operator("ai_animation.quick_idle", text="Idle", icon='PAUSE')
+        row.operator("ai_animation.quick_wave", text="Wave", icon='VIEW_HAND')
 
 class GenerateAnimationOperator(Operator):
-    """توليد حركة"""
+    """Generate Animation"""
     bl_idname = "ai_animation.generate"
     bl_label = "Generate Animation"
     bl_options = {'REGISTER', 'UNDO'}
@@ -74,7 +74,7 @@ class GenerateAnimationOperator(Operator):
         obj = context.active_object
         
         if not obj or obj.type != 'ARMATURE':
-            self.report({'ERROR'}, "يرجى تحديد هيكل عظمي!")
+            self.report({'ERROR'}, "Please select an armature!")
             return {'CANCELLED'}
         
         anim_type = context.scene.ai_animation_type
@@ -95,14 +95,14 @@ class GenerateAnimationOperator(Operator):
             else:
                 result = animation.create_walk_cycle(obj, frames)
             
-            self.report({'INFO'}, f"✅ {result}")
+            self.report({'INFO'}, f"Generated: {result}")
         except Exception as e:
-            self.report({'ERROR'}, f"❌ خطأ: {e}")
+            self.report({'ERROR'}, f"Error: {e}")
         
         return {'FINISHED'}
 
 class SmoothAnimationOperator(Operator):
-    """تنعيم الحركة"""
+    """Smooth Animation"""
     bl_idname = "ai_animation.smooth"
     bl_label = "Smooth Animation"
     bl_options = {'REGISTER', 'UNDO'}
@@ -111,7 +111,7 @@ class SmoothAnimationOperator(Operator):
         obj = context.active_object
         
         if not obj or obj.type != 'ARMATURE':
-            self.report({'ERROR'}, "يرجى تحديد هيكل عظمي!")
+            self.report({'ERROR'}, "Please select an armature!")
             return {'CANCELLED'}
         
         try:
@@ -119,14 +119,14 @@ class SmoothAnimationOperator(Operator):
             animation = AIAnimation()
             animation.smooth_animation(obj)
             
-            self.report({'INFO'}, "✅ تم تنعيم الحركة")
+            self.report({'INFO'}, "Animation smoothed")
         except Exception as e:
-            self.report({'ERROR'}, f"❌ خطأ: {e}")
+            self.report({'ERROR'}, f"Error: {e}")
         
         return {'FINISHED'}
 
 class MirrorAnimationOperator(Operator):
-    """عكس الحركة"""
+    """Mirror Animation"""
     bl_idname = "ai_animation.mirror"
     bl_label = "Mirror Animation"
     bl_options = {'REGISTER', 'UNDO'}
@@ -135,7 +135,7 @@ class MirrorAnimationOperator(Operator):
         obj = context.active_object
         
         if not obj or obj.type != 'ARMATURE':
-            self.report({'ERROR'}, "يرجى تحديد هيكل عظمي!")
+            self.report({'ERROR'}, "Please select an armature!")
             return {'CANCELLED'}
         
         side = context.scene.ai_animation_mirror_side
@@ -145,14 +145,14 @@ class MirrorAnimationOperator(Operator):
             animation = AIAnimation()
             result = animation.mirror_animation(obj, side)
             
-            self.report({'INFO'}, f"✅ {result}")
+            self.report({'INFO'}, f"{result}")
         except Exception as e:
-            self.report({'ERROR'}, f"❌ خطأ: {e}")
+            self.report({'ERROR'}, f"Error: {e}")
         
         return {'FINISHED'}
 
 class QuickWalkOperator(Operator):
-    """حركة مشي سريعة"""
+    """Quick Walk"""
     bl_idname = "ai_animation.quick_walk"
     bl_label = "Quick Walk"
     bl_options = {'REGISTER', 'UNDO'}
@@ -161,21 +161,21 @@ class QuickWalkOperator(Operator):
         obj = context.active_object
         
         if not obj or obj.type != 'ARMATURE':
-            self.report({'ERROR'}, "يرجى تحديد هيكل عظمي!")
+            self.report({'ERROR'}, "Please select an armature!")
             return {'CANCELLED'}
         
         try:
             from ..ai_animation import AIAnimation
             animation = AIAnimation()
             animation.create_walk_cycle(obj, 24)
-            self.report({'INFO'}, "✅ تم إنشاء حركة المشي")
+            self.report({'INFO'}, "Walk animation created")
         except Exception as e:
-            self.report({'ERROR'}, f"❌ خطأ: {e}")
+            self.report({'ERROR'}, f"Error: {e}")
         
         return {'FINISHED'}
 
 class QuickRunOperator(Operator):
-    """حركة جري سريعة"""
+    """Quick Run"""
     bl_idname = "ai_animation.quick_run"
     bl_label = "Quick Run"
     bl_options = {'REGISTER', 'UNDO'}
@@ -184,21 +184,21 @@ class QuickRunOperator(Operator):
         obj = context.active_object
         
         if not obj or obj.type != 'ARMATURE':
-            self.report({'ERROR'}, "يرجى تحديد هيكل عظمي!")
+            self.report({'ERROR'}, "Please select an armature!")
             return {'CANCELLED'}
         
         try:
             from ..ai_animation import AIAnimation
             animation = AIAnimation()
             animation.create_run_cycle(obj, 16)
-            self.report({'INFO'}, "✅ تم إنشاء حركة الجري")
+            self.report({'INFO'}, "Run animation created")
         except Exception as e:
-            self.report({'ERROR'}, f"❌ خطأ: {e}")
+            self.report({'ERROR'}, f"Error: {e}")
         
         return {'FINISHED'}
 
 class QuickIdleOperator(Operator):
-    """حركة خمول سريعة"""
+    """Quick Idle"""
     bl_idname = "ai_animation.quick_idle"
     bl_label = "Quick Idle"
     bl_options = {'REGISTER', 'UNDO'}
@@ -207,21 +207,21 @@ class QuickIdleOperator(Operator):
         obj = context.active_object
         
         if not obj or obj.type != 'ARMATURE':
-            self.report({'ERROR'}, "يرجى تحديد هيكل عظمي!")
+            self.report({'ERROR'}, "Please select an armature!")
             return {'CANCELLED'}
         
         try:
             from ..ai_animation import AIAnimation
             animation = AIAnimation()
             animation.create_idle_animation(obj, 120)
-            self.report({'INFO'}, "✅ تم إنشاء حركة الخمول")
+            self.report({'INFO'}, "Idle animation created")
         except Exception as e:
-            self.report({'ERROR'}, f"❌ خطأ: {e}")
+            self.report({'ERROR'}, f"Error: {e}")
         
         return {'FINISHED'}
 
 class QuickWaveOperator(Operator):
-    """حركة تحية سريعة"""
+    """Quick Wave"""
     bl_idname = "ai_animation.quick_wave"
     bl_label = "Quick Wave"
     bl_options = {'REGISTER', 'UNDO'}
@@ -230,16 +230,16 @@ class QuickWaveOperator(Operator):
         obj = context.active_object
         
         if not obj or obj.type != 'ARMATURE':
-            self.report({'ERROR'}, "يرجى تحديد هيكل عظمي!")
+            self.report({'ERROR'}, "Please select an armature!")
             return {'CANCELLED'}
         
         try:
             from ..ai_animation import AIAnimation
             animation = AIAnimation()
             animation.create_wave_animation(obj, 48)
-            self.report({'INFO'}, "✅ تم إنشاء حركة التحية")
+            self.report({'INFO'}, "Wave animation created")
         except Exception as e:
-            self.report({'ERROR'}, f"❌ خطأ: {e}")
+            self.report({'ERROR'}, f"Error: {e}")
         
         return {'FINISHED'}
 
@@ -254,30 +254,30 @@ def register():
     bpy.utils.register_class(QuickWaveOperator)
     
     bpy.types.Scene.ai_animation_type = bpy.props.EnumProperty(
-        name="نوع الحركة",
+        name="Animation Type",
         items=[
-            ('walk', 'مشي', 'دورة مشي'),
-            ('run', 'جري', 'دورة جري'),
-            ('idle', 'خمول', 'حركة تنفس/انتظار'),
-            ('wave', 'تحية', 'حركة التلويح باليد'),
-            ('jump', 'قفز', 'قفزة (قيد التطوير)'),
-            ('dance', 'رقص', 'حركة رقص (قيد التطوير)'),
+            ('walk', 'Walk', 'Walk cycle'),
+            ('run', 'Run', 'Run cycle'),
+            ('idle', 'Idle', 'Breathing/idle'),
+            ('wave', 'Wave', 'Hand wave'),
+            ('jump', 'Jump', 'Jump (coming soon)'),
+            ('dance', 'Dance', 'Dance (coming soon)'),
         ],
         default='walk'
     )
     
     bpy.types.Scene.ai_animation_frames = bpy.props.IntProperty(
-        name="عدد الإطارات",
+        name="Frames",
         default=24,
         min=1,
         max=500
     )
     
     bpy.types.Scene.ai_animation_mirror_side = bpy.props.EnumProperty(
-        name="الجانب المصدر",
+        name="Source Side",
         items=[
-            ('L', 'يسار', 'نسخ من اليسار إلى اليمين'),
-            ('R', 'يمين', 'نسخ من اليمين إلى اليسار'),
+            ('L', 'Left', 'Mirror from left to right'),
+            ('R', 'Right', 'Mirror from right to left'),
         ],
         default='L'
     )

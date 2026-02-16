@@ -3,8 +3,8 @@ from bpy.types import Panel, Operator
 from bpy.props import StringProperty, EnumProperty, BoolProperty
 
 class AIModelGeneratorPanel(Panel):
-    """لوحة مولد النماذج ثلاثية الأبعاد"""
-    bl_label = "🎨 AI Model Generator"
+    """AI Model Generator Panel"""
+    bl_label = "AI Model Generator"
     bl_idname = "VIEW3D_PT_ai_model_generator"
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
@@ -14,41 +14,39 @@ class AIModelGeneratorPanel(Panel):
         layout = self.layout
         scene = context.scene
         
-        # عنوان القسم
+        # Text generation section
         box = layout.box()
-        box.label(text="توليد من نص", icon='FONT_DATA')
+        box.label(text="Generate from Text", icon='FONT_DATA')
         
-        # حقل النص
         row = box.row()
-        row.prop(scene, "ai_model_text_prompt", text="الوصف")
+        row.prop(scene, "ai_model_text_prompt", text="Description")
         
-        # زر التوليد من نص
         row = box.row()
         row.scale_y = 1.3
         row.operator("ai_model.generate_from_text", 
-                     text="توليد من النص", 
+                     text="Generate from Text", 
                      icon='MESH_CUBE')
         
         layout.separator()
         
-        # قسم الصور
+        # Image section
         box = layout.box()
-        box.label(text="توليد من صورة", icon='IMAGE_DATA')
+        box.label(text="Generate from Image", icon='IMAGE_DATA')
         
         row = box.row()
-        row.prop(scene, "ai_model_image_path", text="مسار الصورة")
+        row.prop(scene, "ai_model_image_path", text="Image Path")
         
         row = box.row()
         row.scale_y = 1.3
         row.operator("ai_model.generate_from_image", 
-                     text="توليد من الصورة", 
+                     text="Generate from Image", 
                      icon='IMAGE_PLANE')
         
         layout.separator()
         
-        # الإعدادات
+        # Settings
         box = layout.box()
-        box.label(text="⚙️ الإعدادات", icon='PREFERENCES')
+        box.label(text="Settings", icon='PREFERENCES')
         
         row = box.row()
         row.prop(scene, "ai_model_style")
@@ -61,32 +59,32 @@ class AIModelGeneratorPanel(Panel):
         
         layout.separator()
         
-        # النماذج البدائية السريعة
+        # Quick primitives
         box = layout.box()
-        box.label(text="⚡ نماذج سريعة", icon='MODIFIER')
+        box.label(text="Quick Primitives", icon='MODIFIER')
         
         row = box.row(align=True)
-        row.operator("ai_model.create_primitive", text="مكعب").primitive_type = 'cube'
-        row.operator("ai_model.create_primitive", text="كرة").primitive_type = 'sphere'
+        row.operator("ai_model.create_primitive", text="Cube").primitive_type = 'cube'
+        row.operator("ai_model.create_primitive", text="Sphere").primitive_type = 'sphere'
         
         row = box.row(align=True)
-        row.operator("ai_model.create_primitive", text="أسطوانة").primitive_type = 'cylinder'
-        row.operator("ai_model.create_primitive", text="حلقة").primitive_type = 'torus'
+        row.operator("ai_model.create_primitive", text="Cylinder").primitive_type = 'cylinder'
+        row.operator("ai_model.create_primitive", text="Torus").primitive_type = 'torus'
         
         layout.separator()
         
-        # التحسينات
+        # Enhancements
         box = layout.box()
-        box.label(text="🔧 تحسينات", icon='MOD_SUBSURF')
+        box.label(text="Enhancements", icon='MOD_SUBSURF')
         
         row = box.row()
-        row.prop(scene, "ai_model_subdivision", text="التقسيم")
+        row.prop(scene, "ai_model_subdivision", text="Subdivision")
         
         row = box.row()
-        row.operator("ai_model.optimize", text="تحسين الشبكة", icon='MESH_DATA')
+        row.operator("ai_model.optimize", text="Optimize Mesh", icon='MESH_DATA')
 
 class GenerateFromTextOperator(Operator):
-    """توليد نموذج من نص"""
+    """Generate Model from Text"""
     bl_idname = "ai_model.generate_from_text"
     bl_label = "Generate Model from Text"
     bl_options = {'REGISTER', 'UNDO'}
@@ -96,30 +94,27 @@ class GenerateFromTextOperator(Operator):
         prompt = scene.ai_model_text_prompt
         
         if not prompt:
-            self.report({'ERROR'}, "يرجى إدخال وصف للنموذج!")
+            self.report({'ERROR'}, "Please enter a description!")
             return {'CANCELLED'}
         
         try:
-            # إنشاء نموذج بدائي كمثال
             from ..ai_model_generator import AIModelGenerator
             generator = AIModelGenerator()
             obj = generator.create_primitive_model("monkey", f"AI_{prompt[:10]}")
             
-            # تطبيق التحسينات
             if scene.ai_model_subdivision > 0:
                 generator.apply_subdivision(obj, scene.ai_model_subdivision)
             
-            # إضافة المادة
             generator.add_material(obj, scene.ai_model_material)
             
-            self.report({'INFO'}, f"✅ تم إنشاء النموذج: {obj.name}")
+            self.report({'INFO'}, f"Created: {obj.name}")
         except Exception as e:
-            self.report({'ERROR'}, f"❌ فشل التوليد: {e}")
+            self.report({'ERROR'}, f"Failed: {e}")
         
         return {'FINISHED'}
 
 class GenerateFromImageOperator(Operator):
-    """توليد نموذج من صورة"""
+    """Generate Model from Image"""
     bl_idname = "ai_model.generate_from_image"
     bl_label = "Generate Model from Image"
     bl_options = {'REGISTER', 'UNDO'}
@@ -129,14 +124,14 @@ class GenerateFromImageOperator(Operator):
         image_path = scene.ai_model_image_path
         
         if not image_path:
-            self.report({'ERROR'}, "يرجى تحديد مسار الصورة!")
+            self.report({'ERROR'}, "Please select image path!")
             return {'CANCELLED'}
         
-        self.report({'INFO'}, f"🔄 جاري معالجة الصورة: {image_path}")
+        self.report({'INFO'}, f"Processing: {image_path}")
         return {'FINISHED'}
 
 class CreatePrimitiveOperator(Operator):
-    """إنشاء نموذج بدائي"""
+    """Create Primitive"""
     bl_idname = "ai_model.create_primitive"
     bl_label = "Create Primitive"
     bl_options = {'REGISTER', 'UNDO'}
@@ -155,14 +150,14 @@ class CreatePrimitiveOperator(Operator):
             
             generator.add_material(obj, scene.ai_model_material)
             
-            self.report({'INFO'}, f"✅ تم إنشاء: {obj.name}")
+            self.report({'INFO'}, f"Created: {obj.name}")
         except Exception as e:
-            self.report({'ERROR'}, f"❌ فشل: {e}")
+            self.report({'ERROR'}, f"Failed: {e}")
         
         return {'FINISHED'}
 
 class OptimizeMeshOperator(Operator):
-    """تحسين شبكة النموذج"""
+    """Optimize Mesh"""
     bl_idname = "ai_model.optimize"
     bl_label = "Optimize Mesh"
     bl_options = {'REGISTER', 'UNDO'}
@@ -171,7 +166,7 @@ class OptimizeMeshOperator(Operator):
         selected = context.selected_objects
         
         if not selected:
-            self.report({'ERROR'}, "يرجى تحديد كائن!")
+            self.report({'ERROR'}, "Please select an object!")
             return {'CANCELLED'}
         
         try:
@@ -182,9 +177,9 @@ class OptimizeMeshOperator(Operator):
                 if obj.type == 'MESH':
                     generator.optimize_mesh(obj)
             
-            self.report({'INFO'}, f"✅ تم تحسين {len(selected)} كائن")
+            self.report({'INFO'}, f"Optimized {len(selected)} objects")
         except Exception as e:
-            self.report({'ERROR'}, f"❌ فشل التحسين: {e}")
+            self.report({'ERROR'}, f"Failed: {e}")
         
         return {'FINISHED'}
 
@@ -195,56 +190,55 @@ def register():
     bpy.utils.register_class(CreatePrimitiveOperator)
     bpy.utils.register_class(OptimizeMeshOperator)
     
-    # خصائص المشهد
     bpy.types.Scene.ai_model_text_prompt = bpy.props.StringProperty(
         name="Prompt",
-        description="وصف النموذج المطلوب",
-        default="تفاحة حمراء"
+        description="Model description",
+        default="red apple"
     )
     
     bpy.types.Scene.ai_model_image_path = bpy.props.StringProperty(
         name="Image Path",
-        description="مسار الصورة",
+        description="Image path",
         default="",
         subtype='FILE_PATH'
     )
     
     bpy.types.Scene.ai_model_style = bpy.props.EnumProperty(
-        name="الأسلوب",
+        name="Style",
         items=[
-            ('simple', 'بسيط', 'نموذج بسيط'),
-            ('detailed', 'تفصيلي', 'نموذج مع التفاصيل'),
-            ('realistic', 'واقعي', 'نموذج واقعي'),
-            ('stylized', 'أسلوبي', 'نموذج أسلوبي'),
-            ('cartoon', 'كرتوني', 'نموذج كرتوني'),
+            ('simple', 'Simple', 'Simple model'),
+            ('detailed', 'Detailed', 'Detailed model'),
+            ('realistic', 'Realistic', 'Realistic model'),
+            ('stylized', 'Stylized', 'Stylized model'),
+            ('cartoon', 'Cartoon', 'Cartoon model'),
         ],
         default='detailed'
     )
     
     bpy.types.Scene.ai_model_resolution = bpy.props.EnumProperty(
-        name="الدقة",
+        name="Resolution",
         items=[
-            ('low', 'منخفضة', '1000 رأس'),
-            ('medium', 'متوسطة', '5000 رأس'),
-            ('high', 'عالية', '20000 رأس'),
-            ('ultra', 'فائقة', '100000 رأس'),
+            ('low', 'Low', '1000 vertices'),
+            ('medium', 'Medium', '5000 vertices'),
+            ('high', 'High', '20000 vertices'),
+            ('ultra', 'Ultra', '100000 vertices'),
         ],
         default='medium'
     )
     
     bpy.types.Scene.ai_model_material = bpy.props.EnumProperty(
-        name="المادة",
+        name="Material",
         items=[
-            ('clay', 'طين', 'مادة طينية'),
-            ('metal', 'معدن', 'مادة معدنية'),
-            ('plastic', 'بلاستيك', 'مادة بلاستيكية'),
+            ('clay', 'Clay', 'Clay material'),
+            ('metal', 'Metal', 'Metal material'),
+            ('plastic', 'Plastic', 'Plastic material'),
         ],
         default='clay'
     )
     
     bpy.types.Scene.ai_model_subdivision = bpy.props.IntProperty(
-        name="مستوى التقسيم",
-        description="عدد مستويات تقسيم الأسطح",
+        name="Subdivision Level",
+        description="Subdivision surface levels",
         default=2,
         min=0,
         max=6

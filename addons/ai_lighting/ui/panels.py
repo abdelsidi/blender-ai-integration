@@ -2,7 +2,7 @@ import bpy
 from bpy.types import Panel, Operator
 
 class AILightingPanel(Panel):
-    """لوحة تحكم AI Lighting"""
+    """AI Lighting Panel"""
     bl_label = "AI Lighting"
     bl_idname = "VIEW3D_PT_ai_lighting"
     bl_space_type = 'VIEW_3D'
@@ -12,13 +12,13 @@ class AILightingPanel(Panel):
     def draw(self, context):
         layout = self.layout
         
-        layout.label(text="تحليل الإضاءة:")
+        layout.label(text="Lighting Analysis:")
         row = layout.row()
         row.operator("ai_lighting.analyze", text="Analyze Scene", icon='LIGHT')
         
         layout.separator()
         
-        layout.label(text="أسلوب الإضاءة:")
+        layout.label(text="Lighting Style:")
         row = layout.row()
         row.prop(context.scene, "ai_lighting_style")
         
@@ -29,7 +29,7 @@ class AILightingPanel(Panel):
         row.operator("ai_lighting.optimize", text="Optimize Lighting", icon='CHECKMARK')
 
 class AnalyzeLightingOperator(Operator):
-    """تحليل الإضاءة"""
+    """Analyze Lighting"""
     bl_idname = "ai_lighting.analyze"
     bl_label = "Analyze Lighting"
     bl_options = {'REGISTER'}
@@ -41,7 +41,7 @@ class AnalyzeLightingOperator(Operator):
         return {'FINISHED'}
 
 class OptimizeLightingOperator(Operator):
-    """تحسين الإضاءة"""
+    """Optimize Lighting"""
     bl_idname = "ai_lighting.optimize"
     bl_label = "Optimize Lighting"
     bl_options = {'REGISTER', 'UNDO'}

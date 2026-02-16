@@ -2,8 +2,8 @@ import bpy
 from bpy.types import Panel, Operator
 
 class AIPoseGeneratorPanel(Panel):
-    """لوحة توليد الأوضاع"""
-    bl_label = "🧍 AI Pose Generator"
+    """AI Pose Generator Panel"""
+    bl_label = "AI Pose Generator"
     bl_idname = "VIEW3D_PT_ai_pose_generator"
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
@@ -14,28 +14,28 @@ class AIPoseGeneratorPanel(Panel):
         scene = context.scene
         
         box = layout.box()
-        box.label(text="الوضعيات", icon='ARMATURE_DATA')
+        box.label(text="Poses", icon='ARMATURE_DATA')
         
         row = box.row()
-        row.prop(scene, "ai_pose_category", text="الفئة")
+        row.prop(scene, "ai_pose_category", text="Category")
         
         row = box.row()
-        row.prop(scene, "ai_pose_type", text="النوع")
+        row.prop(scene, "ai_pose_type", text="Type")
         
         row = box.row()
         row.scale_y = 1.3
-        row.operator("ai_pose.generate", text="توليد الوضعية", icon='POSE_HLT')
+        row.operator("ai_pose.generate", text="Generate Pose", icon='POSE_HLT')
         
         layout.separator()
         
         box = layout.box()
-        box.label(text="حفظ وتحميل", icon='FILE_FOLDER')
+        box.label(text="Save/Load", icon='FILE_FOLDER')
         
         row = box.row()
-        row.operator("ai_pose.save", text="حفظ الوضعية")
+        row.operator("ai_pose.save", text="Save Pose")
 
 class GeneratePoseOperator(Operator):
-    """توليد وضعية"""
+    """Generate Pose"""
     bl_idname = "ai_pose.generate"
     bl_label = "Generate Pose"
     bl_options = {'REGISTER', 'UNDO'}
@@ -43,26 +43,26 @@ class GeneratePoseOperator(Operator):
     def execute(self, context):
         obj = context.active_object
         if not obj or obj.type != 'ARMATURE':
-            self.report({'ERROR'}, "يرجى تحديد هيكل عظمي!")
+            self.report({'ERROR'}, "Please select an armature!")
             return {'CANCELLED'}
         
         try:
             from ..ai_pose_generator import AIPoseGenerator
             generator = AIPoseGenerator()
             result = generator.generate_standing_pose(obj, 'confident')
-            self.report({'INFO'}, f"✅ {result}")
+            self.report({'INFO'}, f"Generated: {result}")
         except Exception as e:
-            self.report({'ERROR'}, f"❌ خطأ: {e}")
+            self.report({'ERROR'}, f"Error: {e}")
         return {'FINISHED'}
 
 class SavePoseOperator(Operator):
-    """حفظ الوضعية"""
+    """Save Pose"""
     bl_idname = "ai_pose.save"
     bl_label = "Save Pose"
     bl_options = {'REGISTER'}
     
     def execute(self, context):
-        self.report({'INFO'}, "✅ تم حفظ الوضعية")
+        self.report({'INFO'}, "Pose saved")
         return {'FINISHED'}
 
 def register():
@@ -71,14 +71,16 @@ def register():
     bpy.utils.register_class(SavePoseOperator)
     
     bpy.types.Scene.ai_pose_category = bpy.props.EnumProperty(
-        items=[('action', 'حركة', 'حركات'), ('emotion', 'عاطفة', 'تعبيرات'), 
-               ('professional', 'مهني', 'وضعيات مهنية'), ('creative', 'إبداعي', 'وضعيات إبداعية')],
+        name="Category",
+        items=[('action', 'Action', 'Action poses'), ('emotion', 'Emotion', 'Emotional expressions'), 
+               ('professional', 'Professional', 'Professional poses'), ('creative', 'Creative', 'Creative poses')],
         default='action'
     )
     
     bpy.types.Scene.ai_pose_type = bpy.props.EnumProperty(
-        items=[('standing', 'وقوف', 'وقوف'), ('running', 'جري', 'جري'), 
-               ('fighting', 'قتال', 'قتال'), ('happy', 'سعادة', 'سعادة')],
+        name="Type",
+        items=[('standing', 'Standing', 'Standing pose'), ('running', 'Running', 'Running pose'), 
+               ('fighting', 'Fighting', 'Fighting pose'), ('happy', 'Happy', 'Happy pose')],
         default='standing'
     )
 

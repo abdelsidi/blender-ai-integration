@@ -2,8 +2,8 @@ import bpy
 from bpy.types import Panel, Operator
 
 class AISceneGeneratorPanel(Panel):
-    """لوحة توليد المشاهد"""
-    bl_label = "🌍 AI Scene Generator"
+    """AI Scene Generator Panel"""
+    bl_label = "AI Scene Generator"
     bl_idname = "VIEW3D_PT_ai_scene_generator"
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
@@ -14,31 +14,31 @@ class AISceneGeneratorPanel(Panel):
         scene = context.scene
         
         box = layout.box()
-        box.label(text="نوع المشهد", icon='WORLD')
+        box.label(text="Scene Type", icon='WORLD')
         
         row = box.row()
-        row.prop(scene, "ai_scene_type", text="النوع")
+        row.prop(scene, "ai_scene_type", text="Type")
         
         row = box.row()
-        row.prop(scene, "ai_scene_complexity", text="التعقيد")
+        row.prop(scene, "ai_scene_complexity", text="Complexity")
         
         row = box.row()
         row.scale_y = 1.3
-        row.operator("ai_scene.generate", text="توليد المشهد", icon='WORLD_DATA')
+        row.operator("ai_scene.generate", text="Generate Scene", icon='WORLD_DATA')
         
         layout.separator()
         
         box = layout.box()
-        box.label(text="الكاميرا", icon='CAMERA_DATA')
+        box.label(text="Camera", icon='CAMERA_DATA')
         
         row = box.row()
-        row.operator("ai_scene.setup_camera", text="إعداد الكاميرا")
+        row.operator("ai_scene.setup_camera", text="Setup Camera")
         
         row = box.row()
-        row.operator("ai_scene.composition", text="قواعد التكوين")
+        row.operator("ai_scene.composition", text="Apply Composition")
 
 class GenerateSceneOperator(Operator):
-    """توليد مشهد"""
+    """Generate Scene"""
     bl_idname = "ai_scene.generate"
     bl_label = "Generate Scene"
     bl_options = {'REGISTER', 'UNDO'}
@@ -48,13 +48,13 @@ class GenerateSceneOperator(Operator):
             from ..ai_scene_generator import AISceneGenerator
             generator = AISceneGenerator()
             result = generator.generate_nature_scene('forest', context.scene.ai_scene_complexity)
-            self.report({'INFO'}, f"✅ {result}")
+            self.report({'INFO'}, f"Generated: {result}")
         except Exception as e:
-            self.report({'ERROR'}, f"❌ خطأ: {e}")
+            self.report({'ERROR'}, f"Error: {e}")
         return {'FINISHED'}
 
 class SetupCameraOperator(Operator):
-    """إعداد الكاميرا"""
+    """Setup Camera"""
     bl_idname = "ai_scene.setup_camera"
     bl_label = "Setup Camera"
     bl_options = {'REGISTER'}
@@ -64,19 +64,19 @@ class SetupCameraOperator(Operator):
             from ..ai_scene_generator import AISceneGenerator
             generator = AISceneGenerator()
             camera = generator.setup_camera()
-            self.report({'INFO'}, f"✅ تم إعداد الكاميرا: {camera.name}")
+            self.report({'INFO'}, f"Camera setup: {camera.name}")
         except Exception as e:
-            self.report({'ERROR'}, f"❌ خطأ: {e}")
+            self.report({'ERROR'}, f"Error: {e}")
         return {'FINISHED'}
 
 class CompositionOperator(Operator):
-    """قواعد التكوين"""
+    """Apply Composition"""
     bl_idname = "ai_scene.composition"
     bl_label = "Apply Composition"
     bl_options = {'REGISTER'}
     
     def execute(self, context):
-        self.report({'INFO'}, "✅ تم تطبيق قواعد التكوين")
+        self.report({'INFO'}, "Composition applied")
         return {'FINISHED'}
 
 def register():
@@ -86,13 +86,15 @@ def register():
     bpy.utils.register_class(CompositionOperator)
     
     bpy.types.Scene.ai_scene_type = bpy.props.EnumProperty(
-        items=[('nature', 'طبيعة', 'مشهد طبيعي'), ('urban', 'مدني', 'بيئة مدنية'), 
-               ('fantasy', 'خيالي', 'عالم خيالي'), ('studio', 'استوديو', 'استوديو تصوير')],
+        name="Scene Type",
+        items=[('nature', 'Nature', 'Natural scene'), ('urban', 'Urban', 'Urban environment'), 
+               ('fantasy', 'Fantasy', 'Fantasy world'), ('studio', 'Studio', 'Photo studio')],
         default='nature'
     )
     
     bpy.types.Scene.ai_scene_complexity = bpy.props.EnumProperty(
-        items=[('low', 'بسيط', 'بسيط'), ('medium', 'متوسط', 'متوسط'), ('high', 'معقد', 'معقد')],
+        name="Complexity",
+        items=[('low', 'Low', 'Simple'), ('medium', 'Medium', 'Medium'), ('high', 'High', 'Complex')],
         default='medium'
     )
 

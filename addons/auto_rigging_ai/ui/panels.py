@@ -2,8 +2,8 @@ import bpy
 from bpy.types import Panel, Operator
 
 class AutoRiggingPanel(Panel):
-    """لوحة الرقمنة التلقائية"""
-    bl_label = "🦴 Auto Rigging AI"
+    """Auto Rigging Panel"""
+    bl_label = "Auto Rigging AI"
     bl_idname = "VIEW3D_PT_auto_rigging_ai"
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
@@ -13,12 +13,12 @@ class AutoRiggingPanel(Panel):
         layout = self.layout
         scene = context.scene
         
-        # قسم التحليل
+        # Analysis section
         box = layout.box()
-        box.label(text="🔍 تحليل الشخصية", icon='VIEWZOOM')
+        box.label(text="Character Analysis", icon='VIEWZOOM')
         
         row = box.row()
-        row.operator("auto_rigging.analyze", text="تحليل الشبكة", icon='MESH_DATA')
+        row.operator("auto_rigging.analyze", text="Analyze Mesh", icon='MESH_DATA')
         
         if scene.auto_rigging_analysis:
             col = box.column()
@@ -26,18 +26,18 @@ class AutoRiggingPanel(Panel):
         
         layout.separator()
         
-        # قسم نوع الشخصية
+        # Character type section
         box = layout.box()
-        box.label(text="🎯 نوع الشخصية", icon='ARMATURE_DATA')
+        box.label(text="Character Type", icon='ARMATURE_DATA')
         
         row = box.row()
         row.prop(scene, "auto_rigging_type", text="")
         
         layout.separator()
         
-        # قسم إنشاء الهيكل
+        # Rig creation section
         box = layout.box()
-        box.label(text="⚡ إنشاء الهيكل العظمي", icon='BONE_DATA')
+        box.label(text="Create Rig", icon='BONE_DATA')
         
         row = box.row()
         row.scale_y = 1.3
@@ -47,18 +47,18 @@ class AutoRiggingPanel(Panel):
         
         layout.separator()
         
-        # خيارات إضافية
+        # Options section
         box = layout.box()
-        box.label(text="⚙️ خيارات", icon='PREFERENCES')
+        box.label(text="Options", icon='PREFERENCES')
         
         row = box.row()
-        row.prop(scene, "auto_rigging_add_ik", text="إضافة IK")
+        row.prop(scene, "auto_rigging_add_ik", text="Add IK")
         
         row = box.row()
-        row.prop(scene, "auto_rigging_auto_bind", text="ربط تلقائي")
+        row.prop(scene, "auto_rigging_auto_bind", text="Auto Bind")
 
 class AnalyzeMeshOperator(Operator):
-    """تحليل شبكة الشخصية"""
+    """Analyze Character Mesh"""
     bl_idname = "auto_rigging.analyze"
     bl_label = "Analyze Character Mesh"
     bl_options = {'REGISTER'}
@@ -67,7 +67,7 @@ class AnalyzeMeshOperator(Operator):
         obj = context.active_object
         
         if not obj or obj.type != 'MESH':
-            self.report({'ERROR'}, "يرجى تحديد كائن شبكة!")
+            self.report({'ERROR'}, "Please select a mesh object!")
             return {'CANCELLED'}
         
         try:
@@ -75,17 +75,17 @@ class AnalyzeMeshOperator(Operator):
             rigging = AutoRiggingAI()
             joints = rigging.analyze_mesh(obj)
             
-            analysis = f"الرؤوس: {len(obj.data.vertices)} | المفاصل المحتملة: {len(joints)}"
+            analysis = f"Vertices: {len(obj.data.vertices)} | Joints: {len(joints)}"
             context.scene.auto_rigging_analysis = analysis
             
-            self.report({'INFO'}, f"✅ تم العثور على {len(joints)} منطقة محتملة")
+            self.report({'INFO'}, f"Found {len(joints)} potential joints")
         except Exception as e:
-            self.report({'ERROR'}, f"❌ خطأ: {e}")
+            self.report({'ERROR'}, f"Error: {e}")
         
         return {'FINISHED'}
 
 class GenerateRigOperator(Operator):
-    """إنشاء الهيكل العظمي"""
+    """Generate Rig"""
     bl_idname = "auto_rigging.generate"
     bl_label = "Generate Rig"
     bl_options = {'REGISTER', 'UNDO'}
@@ -94,7 +94,7 @@ class GenerateRigOperator(Operator):
         obj = context.active_object
         
         if not obj or obj.type != 'MESH':
-            self.report({'ERROR'}, "يرجى تحديد كائن شبكة!")
+            self.report({'ERROR'}, "Please select a mesh object!")
             return {'CANCELLED'}
         
         rig_type = context.scene.auto_rigging_type
@@ -108,16 +108,16 @@ class GenerateRigOperator(Operator):
             elif rig_type == 'quadruped':
                 armature = rigging.create_quadruped_rig(obj)
             else:
-                self.report({'WARNING'}, "هذا النوع قيد التطوير، سيتم استخدام النوع البشري")
+                self.report({'WARNING'}, "Type in development, using human")
                 armature = rigging.create_human_rig(obj)
             
-            # إضافة IK إذا كان مفعلاً
+            # Add IK if enabled
             if context.scene.auto_rigging_add_ik:
                 rigging.add_ik_constraints(armature)
             
-            self.report({'INFO'}, f"✅ تم إنشاء الهيكل: {armature.name}")
+            self.report({'INFO'}, f"Rig created: {armature.name}")
         except Exception as e:
-            self.report({'ERROR'}, f"❌ فشل الإنشاء: {e}")
+            self.report({'ERROR'}, f"Failed: {e}")
         
         return {'FINISHED'}
 
@@ -127,31 +127,31 @@ def register():
     bpy.utils.register_class(GenerateRigOperator)
     
     bpy.types.Scene.auto_rigging_type = bpy.props.EnumProperty(
-        name="نوع الشخصية",
+        name="Character Type",
         items=[
-            ('human', 'بشري', 'شخصية بشرية'),
-            ('quadruped', 'رباعي', 'حيوان رباعي الأرجل'),
-            ('bird', 'طائر', 'طائر (قيد التطوير)'),
-            ('spider', 'عنكبوت', 'عنكبوت (قيد التطوير)'),
-            ('custom', 'مخصص', 'مخصص (قيد التطوير)'),
+            ('human', 'Human', 'Human character'),
+            ('quadruped', 'Quadruped', 'Four-legged animal'),
+            ('bird', 'Bird', 'Bird (coming soon)'),
+            ('spider', 'Spider', 'Spider (coming soon)'),
+            ('custom', 'Custom', 'Custom (coming soon)'),
         ],
         default='human'
     )
     
     bpy.types.Scene.auto_rigging_add_ik = bpy.props.BoolProperty(
-        name="إضافة IK",
-        description="إضافة قيود العكسية الحركية",
+        name="Add IK",
+        description="Add inverse kinematics constraints",
         default=True
     )
     
     bpy.types.Scene.auto_rigging_auto_bind = bpy.props.BoolProperty(
-        name="ربط تلقائي",
-        description="ربط الشبكة بالهيكل تلقائياً",
+        name="Auto Bind",
+        description="Automatically bind mesh to armature",
         default=True
     )
     
     bpy.types.Scene.auto_rigging_analysis = bpy.props.StringProperty(
-        name="نتائج التحليل",
+        name="Analysis Results",
         default=""
     )
 

@@ -2,8 +2,8 @@ import bpy
 from bpy.types import Panel, Operator
 
 class AIDenoiserPanel(Panel):
-    """لوحة إزالة الضوضاء"""
-    bl_label = "✨ AI Denoiser"
+    """AI Denoiser Panel"""
+    bl_label = "AI Denoiser"
     bl_idname = "RENDER_PT_ai_denoiser"
     bl_space_type = 'PROPERTIES'
     bl_region_type = 'WINDOW'
@@ -14,20 +14,20 @@ class AIDenoiserPanel(Panel):
         scene = context.scene
         
         box = layout.box()
-        box.label(text="إعدادات إزالة الضوضاء", icon='SHADERFX')
+        box.label(text="Denoise Settings", icon='SHADERFX')
         
         row = box.row()
-        row.prop(scene, "ai_denoiser_type", text="النوع")
+        row.prop(scene, "ai_denoiser_type", text="Type")
         
         row = box.row()
         row.scale_y = 1.3
-        row.operator("ai_denoiser.setup", text="إعداد تلقائي", icon='CHECKMARK')
+        row.operator("ai_denoiser.setup", text="Auto Setup", icon='CHECKMARK')
         
         row = box.row()
-        row.operator("ai_denoiser.analyze", text="تحليل الضوضاء")
+        row.operator("ai_denoiser.analyze", text="Analyze Noise")
 
 class SetupDenoiserOperator(Operator):
-    """إعداد إزالة الضوضاء"""
+    """Setup Denoiser"""
     bl_idname = "ai_denoiser.setup"
     bl_label = "Setup Denoiser"
     bl_options = {'REGISTER'}
@@ -37,13 +37,13 @@ class SetupDenoiserOperator(Operator):
             from ..ai_denoiser import AIDenoiser
             denoiser = AIDenoiser()
             result = denoiser.auto_setup(context.scene)
-            self.report({'INFO'}, f"✅ تم الإعداد: {result['denoiser']}")
+            self.report({'INFO'}, f"Setup: {result['denoiser']}")
         except Exception as e:
-            self.report({'ERROR'}, f"❌ خطأ: {e}")
+            self.report({'ERROR'}, f"Error: {e}")
         return {'FINISHED'}
 
 class AnalyzeNoiseOperator(Operator):
-    """تحليل الضوضاء"""
+    """Analyze Noise"""
     bl_idname = "ai_denoiser.analyze"
     bl_label = "Analyze Noise"
     bl_options = {'REGISTER'}
@@ -53,9 +53,9 @@ class AnalyzeNoiseOperator(Operator):
             from ..ai_denoiser import AIDenoiser
             denoiser = AIDenoiser()
             level = denoiser.estimate_noise_level(context.scene)
-            self.report({'INFO'}, f"📊 مستوى الضوضاء: {level}")
+            self.report({'INFO'}, f"Noise level: {level}")
         except Exception as e:
-            self.report({'ERROR'}, f"❌ خطأ: {e}")
+            self.report({'ERROR'}, f"Error: {e}")
         return {'FINISHED'}
 
 def register():
@@ -64,6 +64,7 @@ def register():
     bpy.utils.register_class(AnalyzeNoiseOperator)
     
     bpy.types.Scene.ai_denoiser_type = bpy.props.EnumProperty(
+        name="Type",
         items=[('optix', 'OptiX', 'NVIDIA OptiX'), ('oidn', 'OIDN', 'Intel Open Image Denoise')],
         default='optix'
     )

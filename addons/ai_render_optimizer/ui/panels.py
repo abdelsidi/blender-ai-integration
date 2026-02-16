@@ -2,8 +2,8 @@ import bpy
 from bpy.types import Panel, Operator
 
 class AIRenderOptimizerPanel(Panel):
-    """لوحة محسن الرندر"""
-    bl_label = "🎬 AI Render Optimizer"
+    """AI Render Optimizer Panel"""
+    bl_label = "AI Render Optimizer"
     bl_idname = "RENDER_PT_ai_render_optimizer"
     bl_space_type = 'PROPERTIES'
     bl_region_type = 'WINDOW'
@@ -13,12 +13,12 @@ class AIRenderOptimizerPanel(Panel):
         layout = self.layout
         scene = context.scene
         
-        # تحليل المشهد
+        # Scene analysis
         box = layout.box()
-        box.label(text="🔍 تحليل المشهد", icon='VIEWZOOM')
+        box.label(text="Scene Analysis", icon='VIEWZOOM')
         
         row = box.row()
-        row.operator("ai_render.analyze", text="تحليل التعقيد")
+        row.operator("ai_render.analyze", text="Analyze Complexity")
         
         if scene.ai_render_analysis:
             col = box.column()
@@ -26,28 +26,28 @@ class AIRenderOptimizerPanel(Panel):
         
         layout.separator()
         
-        # الإعدادات المسبقة
+        # Quality presets
         box = layout.box()
-        box.label(text="⚡ جودة الرندر", icon='RENDER_STILL')
+        box.label(text="Render Quality", icon='RENDER_STILL')
         
         row = box.row()
         row.prop(scene, "ai_render_quality", text="")
         
         row = box.row()
         row.scale_y = 1.3
-        row.operator("ai_render.optimize", text="تطبيق الإعدادات", icon='CHECKMARK')
+        row.operator("ai_render.optimize", text="Apply Settings", icon='CHECKMARK')
         
         row = box.row()
-        row.operator("ai_render.auto_optimize", text="تحسين تلقائي", icon='SHADERFX')
+        row.operator("ai_render.auto_optimize", text="Auto Optimize", icon='SHADERFX')
         
         layout.separator()
         
-        # تقدير الوقت
+        # Time estimate
         box = layout.box()
-        box.label(text="⏱️ وقت الرندر", icon='TIME')
+        box.label(text="Render Time", icon='TIME')
         
         row = box.row()
-        row.operator("ai_render.estimate_time", text="تقدير الوقت")
+        row.operator("ai_render.estimate_time", text="Estimate Time")
         
         if scene.ai_render_time_estimate:
             col = box.column()
@@ -55,15 +55,15 @@ class AIRenderOptimizerPanel(Panel):
         
         layout.separator()
         
-        # تحسينات إضافية
+        # Additional optimizations
         box = layout.box()
-        box.label(text="✨ تحسينات", icon='MODIFIER')
+        box.label(text="Enhancements", icon='MODIFIER')
         
         row = box.row()
-        row.operator("ai_render.optimize_lighting", text="تحسين الإضاءة")
+        row.operator("ai_render.optimize_lighting", text="Optimize Lighting")
 
 class AnalyzeSceneOperator(Operator):
-    """تحليل تعقيد المشهد"""
+    """Analyze Scene"""
     bl_idname = "ai_render.analyze"
     bl_label = "Analyze Scene"
     bl_options = {'REGISTER'}
@@ -74,17 +74,17 @@ class AnalyzeSceneOperator(Operator):
             optimizer = AIRenderOptimizer()
             stats = optimizer.analyze_scene_complexity(context.scene)
             
-            analysis = f"كائنات: {stats['objects']} | رؤوس: {stats['vertices']} | درجة التعقيد: {stats['complexity_score']:.1f}"
+            analysis = f"Objects: {stats['objects']} | Vertices: {stats['vertices']} | Complexity: {stats['complexity_score']:.1f}"
             context.scene.ai_render_analysis = analysis
             
-            self.report({'INFO'}, f"✅ تم التحليل - التعقيد: {stats['complexity_score']:.1f}")
+            self.report({'INFO'}, f"Analyzed - Complexity: {stats['complexity_score']:.1f}")
         except Exception as e:
-            self.report({'ERROR'}, f"❌ خطأ: {e}")
+            self.report({'ERROR'}, f"Error: {e}")
         
         return {'FINISHED'}
 
 class OptimizeSettingsOperator(Operator):
-    """تطبيق إعدادات الرندر"""
+    """Optimize Settings"""
     bl_idname = "ai_render.optimize"
     bl_label = "Optimize Settings"
     bl_options = {'REGISTER'}
@@ -97,14 +97,14 @@ class OptimizeSettingsOperator(Operator):
             optimizer = AIRenderOptimizer()
             settings = optimizer.optimize_settings(context.scene, quality)
             
-            self.report({'INFO'}, f"✅ تم التطبيق: {quality} - Samples: {settings.get('samples', 'N/A')}")
+            self.report({'INFO'}, f"Applied: {quality} - Samples: {settings.get('samples', 'N/A')}")
         except Exception as e:
-            self.report({'ERROR'}, f"❌ خطأ: {e}")
+            self.report({'ERROR'}, f"Error: {e}")
         
         return {'FINISHED'}
 
 class AutoOptimizeOperator(Operator):
-    """تحسين تلقائي"""
+    """Auto Optimize"""
     bl_idname = "ai_render.auto_optimize"
     bl_label = "Auto Optimize"
     bl_options = {'REGISTER'}
@@ -117,14 +117,14 @@ class AutoOptimizeOperator(Operator):
             
             context.scene.ai_render_quality = result['quality_level']
             
-            self.report({'INFO'}, f"✅ تم التحسين التلقائي: {result['quality_level']}")
+            self.report({'INFO'}, f"Auto optimized: {result['quality_level']}")
         except Exception as e:
-            self.report({'ERROR'}, f"❌ خطأ: {e}")
+            self.report({'ERROR'}, f"Error: {e}")
         
         return {'FINISHED'}
 
 class EstimateTimeOperator(Operator):
-    """تقدير وقت الرندر"""
+    """Estimate Render Time"""
     bl_idname = "ai_render.estimate_time"
     bl_label = "Estimate Render Time"
     bl_options = {'REGISTER'}
@@ -135,17 +135,17 @@ class EstimateTimeOperator(Operator):
             optimizer = AIRenderOptimizer()
             estimate = optimizer.estimate_render_time(context.scene)
             
-            time_text = f"وقت متوقع: {estimate['estimated_minutes']} دقيقة"
+            time_text = f"Estimated: {estimate['estimated_minutes']} minutes"
             context.scene.ai_render_time_estimate = time_text
             
-            self.report({'INFO'}, f"⏱️ {time_text}")
+            self.report({'INFO'}, f"{time_text}")
         except Exception as e:
-            self.report({'ERROR'}, f"❌ خطأ: {e}")
+            self.report({'ERROR'}, f"Error: {e}")
         
         return {'FINISHED'}
 
 class OptimizeLightingOperator(Operator):
-    """تحسين الإضاءة"""
+    """Optimize Lighting"""
     bl_idname = "ai_render.optimize_lighting"
     bl_label = "Optimize Lighting"
     bl_options = {'REGISTER'}
@@ -157,9 +157,9 @@ class OptimizeLightingOperator(Operator):
             optimizations = optimizer.optimize_lighting_for_render(context.scene)
             
             count = len(optimizations)
-            self.report({'INFO'}, f"✅ تم تحسين {count} إضاءة")
+            self.report({'INFO'}, f"Optimized {count} lights")
         except Exception as e:
-            self.report({'ERROR'}, f"❌ خطأ: {e}")
+            self.report({'ERROR'}, f"Error: {e}")
         
         return {'FINISHED'}
 
@@ -172,12 +172,12 @@ def register():
     bpy.utils.register_class(OptimizeLightingOperator)
     
     bpy.types.Scene.ai_render_quality = bpy.props.EnumProperty(
-        name="جودة الرندر",
+        name="Render Quality",
         items=[
-            ('draft', 'مسودة', 'سريع للاختبار'),
-            ('preview', 'معاينة', 'جودة متوسطة'),
-            ('production', 'إنتاج', 'جودة عالية'),
-            ('cinematic', 'سينمائي', 'أعلى جودة'),
+            ('draft', 'Draft', 'Fast for testing'),
+            ('preview', 'Preview', 'Medium quality'),
+            ('production', 'Production', 'High quality'),
+            ('cinematic', 'Cinematic', 'Highest quality'),
         ],
         default='production'
     )

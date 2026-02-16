@@ -2,7 +2,7 @@ import bpy
 from bpy.types import Panel, Operator
 
 class AIMaterialGeneratorPanel(Panel):
-    """لوحة تحكم AI Material Generator"""
+    """AI Material Generator Panel"""
     bl_label = "AI Material Generator"
     bl_idname = "VIEW3D_PT_ai_material_generator"
     bl_space_type = 'VIEW_3D'
@@ -12,14 +12,14 @@ class AIMaterialGeneratorPanel(Panel):
     def draw(self, context):
         layout = self.layout
         
-        layout.label(text="إعدادات API:")
+        layout.label(text="API Settings:")
         row = layout.row()
         row.prop(context.scene, "ai_material_prompt")
         
         row = layout.row()
         row.prop(context.scene, "ai_material_model")
         
-        layout.label(text="إعدادات المادة:")
+        layout.label(text="Material Settings:")
         row = layout.row()
         row.prop(context.scene, "ai_material_style")
         
@@ -34,7 +34,7 @@ class AIMaterialGeneratorPanel(Panel):
         row.operator("ai_material.apply", text="Apply Material", icon='CHECKMARK')
 
 class GenerateMaterialOperator(Operator):
-    """مشغل إنشاء المادة"""
+    """Generate Material"""
     bl_idname = "ai_material.generate"
     bl_label = "Generate AI Material"
     bl_options = {'REGISTER', 'UNDO'}
@@ -59,7 +59,7 @@ class GenerateMaterialOperator(Operator):
         return {'FINISHED'}
 
 class ApplyMaterialOperator(Operator):
-    """مشغل تطبيق المادة"""
+    """Apply Material"""
     bl_idname = "ai_material.apply"
     bl_label = "Apply AI Material"
     bl_options = {'REGISTER', 'UNDO'}
