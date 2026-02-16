@@ -1,0 +1,32 @@
+{
+  "materials": [
+    {
+      "id": "mat_001",
+      "name": "Red Metallic",
+      "type": "metal",
+      "color": [0.8, 0.1, 0.1, 1.0],
+      "roughness": 0.2,
+      "metallic": 1.0,
+      "prompt": "shiny red metal"
+    },
+    {
+      "id": "mat_002", 
+      "name": "Blue Plastic",
+      "type": "plastic",
+      "color": [0.1, 0.4, 0.8, 1.0],
+      "roughness": 0.1,
+      "metallic": 0.0,
+      "prompt": "smooth blue plastic"
+    },
+    {
+      "id": "mat_003",
+      "name": "Wood Oak",
+      "type": "wood", 
+      "color": [0.4, 0.25, 0.1, 1.0],
+      "roughness": 0.8,
+      "metallic": 0.0,
+      "prompt": "oak wood texture"
+    }
+  ],
+  "categories": ["metal", "plastic", "wood", "glass", "fabric"]
+}

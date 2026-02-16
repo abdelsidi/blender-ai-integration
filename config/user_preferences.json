@@ -1,0 +1,29 @@
+{
+  "user": {
+    "name": "Default User",
+    "language": "en",
+    "theme": "dark"
+  },
+  "preferences": {
+    "default_model_quality": "medium",
+    "auto_save": true,
+    "default_material": "clay",
+    "render_engine": "cycles",
+    "auto_subdivision": 2
+  },
+  "shortcuts": {
+    "generate_material": "Ctrl+Shift+M",
+    "optimize_lighting": "Ctrl+Shift+L",
+    "quick_model": "Ctrl+Shift+G"
+  },
+  "recent_prompts": [
+    "red apple",
+    "metal surface",
+    "wooden chair"
+  ],
+  "api_keys": {
+    "openai": "",
+    "stability": "",
+    "note": "Add your API keys here or use environment variables"
+  }
+}

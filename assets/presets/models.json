@@ -1,0 +1,29 @@
+{
+  "models": [
+    {
+      "id": "model_001",
+      "name": "Apple",
+      "type": "fruit",
+      "prompt": "red apple",
+      "primitive": "sphere",
+      "scale": [1, 1, 1],
+      "material": "red_plastic"
+    },
+    {
+      "id": "model_002",
+      "name": "Tree",
+      "type": "nature", 
+      "prompt": "simple tree",
+      "primitive": "custom",
+      "components": ["cylinder", "ico_sphere"]
+    },
+    {
+      "id": "model_003",
+      "name": "Chair",
+      "type": "furniture",
+      "prompt": "wooden chair",
+      "primitive": "custom",
+      "parts": ["seat", "back", "legs"]
+    }
+  ]
+}

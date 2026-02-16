@@ -1,0 +1,37 @@
+{
+  "project": {
+    "name": "Blender AI Integration",
+    "version": "1.0.0",
+    "author": "Abdelsidi",
+    "description": "AI-powered addons for Blender"
+  },
+  "ai_services": {
+    "openai": {
+      "enabled": true,
+      "model": "dall-e-3",
+      "max_requests_per_minute": 60
+    },
+    "stability": {
+      "enabled": true,
+      "model": "stable-diffusion-xl",
+      "timeout": 120
+    },
+    "local_models": {
+      "enabled": false,
+      "path": "./ai_models"
+    }
+  },
+  "features": {
+    "material_generator": true,
+    "lighting_optimizer": true,
+    "model_generator": true,
+    "video_to_3d": true,
+    "auto_rigging": true,
+    "animation": true
+  },
+  "paths": {
+    "output_dir": "./outputs",
+    "temp_dir": "./temp",
+    "cache_dir": "./.cache"
+  }
+}
