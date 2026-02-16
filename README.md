@@ -244,7 +244,7 @@ REPLICATE_API_TOKEN=your_token_here
 ## 📧 التواصل
 
 - GitHub Issues: [المشاكل والاقتراحات](https://github.com/abdelsidi/blender-ai-integration/issues)
-- البريد الإلكتروني: abdulseddiq@gmail.com
+- البريد الإلكتروني: abdelsidi4@gmail.com
 
 ---
 
