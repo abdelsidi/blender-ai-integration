@@ -6,7 +6,7 @@ bl_info = {
     "location": "View3D > Sidebar > AI Tools > Auto Rigging",
     "description": "Automatic character rigging using AI",
     "category": "AI",
-    "doc_url": "https://github.com/abdelsidi/blender-ai-integration/blob/main/docs/ADDON_INSTALLATION.md",
+    "doc_url": "https://github.com/abdelsidi/blender-ai-integration/blob/main/docs/AUTO_RIGGING_AI.md",
     "tracker_url": "https://github.com/abdelsidi/blender-ai-integration/issues",
 }
 

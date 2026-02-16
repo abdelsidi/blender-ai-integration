@@ -4,9 +4,9 @@ bl_info = {
     "version": (1, 0, 0),
     "blender": (3, 0, 0),
     "location": "View3D > Sidebar > AI Tools > Animation",
-    "description": "AI-powered animation generation",
+    "description": "AI-powered animation tools for automatic character animation",
     "category": "AI",
-    "doc_url": "https://github.com/abdelsidi/blender-ai-integration/blob/main/docs/ADDON_INSTALLATION.md",
+    "doc_url": "https://github.com/abdelsidi/blender-ai-integration/blob/main/docs/AI_ANIMATION.md",
     "tracker_url": "https://github.com/abdelsidi/blender-ai-integration/issues",
 }
 
